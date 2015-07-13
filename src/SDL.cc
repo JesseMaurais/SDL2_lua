@@ -36,4 +36,3 @@ extern "C" int luaopen_SDL(lua_State *state)
 	newtype(state, RWops);
 	return 1;
 }
-

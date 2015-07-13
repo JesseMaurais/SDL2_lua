@@ -1,8 +1,8 @@
 #include "SDL.hpp"
 #include <SDL2/SDL_image.h>
 
+#undef REG
 #define REG(name) {#name, lux_cast(IMG_##name)},
-#define END {nullptr, nullptr}
 
 extern "C" int luaopen_IMG(lua_State *state)
 {

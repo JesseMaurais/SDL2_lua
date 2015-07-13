@@ -32,22 +32,6 @@ template <> Mix_MusicType lux_to<Mix_MusicType>(lua_State *state, int arg)
 	};
 }
 
-template <> luaL_Reg lux_Union<Mix_Chunk>::index[] =
-{
-	lux_index(Mix_Chunk, allocated),
-	lux_index(Mix_Chunk, abuf),
-	lux_index(Mix_Chunk, alen),
-	lux_index(Mix_Chunk, volume)
-};
-
-template <> luaL_Reg lux_Union<Mix_Chunk>::newindex[] =
-{
-	lux_newindex(Mix_Chunk, allocated),
-	lux_newindex(Mix_Chunk, abuf),
-	lux_newindex(Mix_Chunk, alen),
-	lux_newindex(Mix_Chunk, volume)
-};
-
 static int QuerySpec(lua_State *state)
 {
 	int frequency;
@@ -70,8 +54,8 @@ static int PlayChannel(int channel, Mix_Chunk *chunk, int loops)
 	return Mix_PlayChannel(channel, chunk, loops);
 }
 
+#undef REG
 #define REG(name) {#name, lux_cast(Mix_##name)},
-#define END {nullptr, nullptr}
 
 extern "C" int luaopen_Mix(lua_State *state)
 {

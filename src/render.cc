@@ -1,29 +1,5 @@
 #include "SDL.hpp"
 
-
-template <> SDL_RendererFlip lux_to<SDL_RendererFlip>(lua_State *state, int arg)
-{
-	return (SDL_RendererFlip) luaL_checkinteger(state, arg);
-}
-template <> SDL_BlendMode lux_to<SDL_BlendMode>(lua_State *state, int arg)
-{
-	return (SDL_BlendMode) luaL_checkinteger(state, arg);
-}
-template <> SDL_TextureAccess lux_to<SDL_TextureAccess>(lua_State *state, int arg)
-{
-	return (SDL_TextureAccess) luaL_checkinteger(state, arg);
-}
-
-template <> luaL_Reg lux_Union<SDL_RendererInfo>::index[] =
-{
-	lux_index(SDL_RendererInfo, name),
-	lux_index(SDL_RendererInfo, flags),
-	lux_index(SDL_RendererInfo, num_texture_formats),
-	lux_index(SDL_RendererInfo, texture_formats),
-	lux_index(SDL_RendererInfo, max_texture_width),
-	lux_index(SDL_RendererInfo, max_texture_height)
-};
-
 static int CreateWindowAndRenderer(lua_State *state)
 {
 	SDL_Window *window;
@@ -37,9 +13,7 @@ static int CreateWindowAndRenderer(lua_State *state)
 	}
 	else
 	{
-	 lux_push(state, window);
-	 lux_push(state, renderer);
-	 return 2;
+	 return lux_push(state, window, renderer);
 	}
 }
 
@@ -48,29 +22,28 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	luaL_newmetatable(state, SDL_METATABLE);
 	struct {
 	 const char *name;
-	 int value;
+	 lua_Integer value;
 	}
 	args [] =
 	{
-	 // SDL_RendererFlags
-	 {"RENDERER_SOFTWARE", SDL_RENDERER_SOFTWARE},
-	 {"RENDERER_ACCELERATED", SDL_RENDERER_ACCELERATED},
-	 {"RENDERER_PRESENTVSYNC", SDL_RENDERER_PRESENTVSYNC},
-	 {"RENDERER_TARGETTEXTURE", SDL_RENDERER_TARGETTEXTURE},
-	 // SDL_RendererFlip
-	 {"FLIP_NONE", SDL_FLIP_NONE},
-	 {"FLIP_HORIZONTAL", SDL_FLIP_HORIZONTAL},
-	 {"FLIP_VERTICAL", SDL_FLIP_VERTICAL},
-	 // SDL_TextureAccess
-	 {"TEXTUREACCESS_STATIC", SDL_TEXTUREACCESS_STATIC},
-	 {"TEXTUREACCESS_STREAMING", SDL_TEXTUREACCESS_STREAMING},
-	 {"TEXTUREACCESS_TARGET", SDL_TEXTUREACCESS_TARGET},
-	 // SDL_TextureModulate
-	 {"TEXTUREMODULATE_NONE", SDL_TEXTUREMODULATE_NONE},
-	 {"TEXTUREMODULATE_COLOR", SDL_TEXTUREMODULATE_COLOR},
-	 {"TEXTUREMODULATE_ALPHA", SDL_TEXTUREMODULATE_ALPHA},
-	 // end
-	 {nullptr, 0}
+	// SDL_RendererFlags
+	ARG(RENDERER_SOFTWARE)
+	ARG(RENDERER_ACCELERATED)
+	ARG(RENDERER_PRESENTVSYNC)
+	ARG(RENDERER_TARGETTEXTURE)
+	// SDL_RendererFlip
+	ARG(FLIP_NONE)
+	ARG(FLIP_HORIZONTAL)
+	ARG(FLIP_VERTICAL)
+	// SDL_TextureAccess
+	ARG(TEXTUREACCESS_STATIC)
+	ARG(TEXTUREACCESS_STREAMING)
+	ARG(TEXTUREACCESS_TARGET)
+	// SDL_TextureModulate
+	ARG(TEXTUREMODULATE_NONE)
+	ARG(TEXTUREMODULATE_COLOR)
+	ARG(TEXTUREMODULATE_ALPHA)
+	END
 	};
 	for (auto r=args; r->name; ++r)
 	{
@@ -79,59 +52,59 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	}
 	luaL_Reg regs [] =
 	{
-	 {"CreateRenderer", lux_cast(SDL_CreateRenderer)},
-	 {"CreateSoftwareRenderer", lux_cast(SDL_CreateSoftwareRenderer)},
-	 {"CreateTexture", lux_cast(SDL_CreateTexture)},
-	 {"CreateTextureFromSurface", lux_cast(SDL_CreateTextureFromSurface)},
-	 {"CreateWindowAndRenderer", CreateWindowAndRenderer},
-	 {"DestroyRenderer", lux_cast(SDL_DestroyRenderer)},
-	 {"DestroyTexture", lux_cast(SDL_DestroyTexture)},
-	 {"GetNumRenderDrivers", lux_cast(SDL_GetNumRenderDrivers)},
-//	 {"GetRenderDrawBlendMode", lux_cast(SDL_GetRenderDrawBlendMode)},
-	 {"GetRenderDrawColor", lux_cast(SDL_GetRenderDrawColor)},
-	 {"GetRenderDriverInfo", lux_cast(SDL_GetRenderDriverInfo)},
-	 {"GetRenderTarget", lux_cast(SDL_GetRenderTarget)},
-	 {"GetRenderer", lux_cast(SDL_GetRenderer)},
-	 {"GetRendererInfo", lux_cast(SDL_GetRendererInfo)},
-//	 {"GetRendererOutputSize", lux_cast(SDL_GetRendererOutputSize)},
-//	 {"GetTextureAlphaMod", lux_cast(SDL_GetTextureAlphaMod)},
-//	 {"GetTextureBlendMode", lux_cast(SDL_GetTextureBlendMode)},
-//	 {"GetTextureColorMod", lux_cast(SDL_GetTextureColorMod)},
-//	 {"LockTexture", lux_cast(SDL_LockTexture)},
-//	 {"QueryTexture", lux_cast(SDL_QueryTexture)},
-	 {"RenderClear", lux_cast(SDL_RenderClear)},
-	 {"RenderCopy", lux_cast(SDL_RenderCopy)},
-	 {"RenderCopyEx", lux_cast(SDL_RenderCopyEx)},
-	 {"RenderDrawLine", lux_cast(SDL_RenderDrawLine)},
-	 {"RenderDrawLines", lux_cast(SDL_RenderDrawLines)},
-	 {"RenderDrawPoint", lux_cast(SDL_RenderDrawPoint)},
-	 {"RenderDrawPoints", lux_cast(SDL_RenderDrawPoints)},
-	 {"RenderDrawRect", lux_cast(SDL_RenderDrawRects)},
-	 {"RenderDrawRects", lux_cast(SDL_RenderDrawRects)},
-	 {"RenderFillRect", lux_cast(SDL_RenderFillRect)},
-	 {"RenderFillRects", lux_cast(SDL_RenderFillRects)},
-	 {"RenderGetClipRect", lux_cast(SDL_RenderGetClipRect)},
-//	 {"RenderGetLogicalSize", lux_cast(SDL_RenderGetLogicalSize)},
-//	 {"RenderGetScale", lux_cast(SDL_RenderGetScale)},
-	 {"RenderGetViewport", lux_cast(SDL_RenderGetViewport)},
-//	 {"RenderIsClipEnabled", lux_cast(SDL_RenderIsClipEnabled)},
-	 {"RenderPresent", lux_cast(SDL_RenderPresent)},
-//	 {"RenderReadPixels", lux_cast(SDL_RenderReadPixels)},
-	 {"RenderSetClipRect", lux_cast(SDL_RenderSetClipRect)},
-	 {"RenderSetLogicalSize", lux_cast(SDL_RenderSetLogicalSize)},
-	 {"RenderSetScale", lux_cast(SDL_RenderSetScale)},
-	 {"RenderSetViewport", lux_cast(SDL_RenderSetViewport)},
-	 {"RenderTargetSupported", lux_cast(SDL_RenderTargetSupported)},
-	 {"SetRenderDrawBlendMode", lux_cast(SDL_SetRenderDrawBlendMode)},
-	 {"SetRenderDrawColor", lux_cast(SDL_SetRenderDrawColor)},
-	 {"SetRenderTarget", lux_cast(SDL_SetRenderTarget)},
-	 {"SetTextureAlphaMod", lux_cast(SDL_SetTextureAlphaMod)},
-	 {"SetTextureBlendMode", lux_cast(SDL_SetTextureBlendMode)},
-	 {"SetTextureColorMod", lux_cast(SDL_SetTextureColorMod)},
-//	 {"UnlockTexture", lux_cast(SDL_UnlockTexture)},
-//	 {"UpdateTexture", lux_cast(SDL_UpdateTexture)},
-//	 {"UpdateUYVTexture", lux_cast(SDL_UpdateYUVTexture)},
-	 {nullptr, nullptr}
+	REG(CreateRenderer)
+	REG(CreateSoftwareRenderer)
+	REG(CreateTexture)
+	REG(CreateTextureFromSurface)
+	REG(CreateWindowAndRenderer)
+	REG(DestroyRenderer)
+	REG(DestroyTexture)
+	REG(GetNumRenderDrivers)
+//	REG(GetRenderDrawBlendMode)
+	REG(GetRenderDrawColor)
+	REG(GetRenderDriverInfo)
+	REG(GetRenderTarget)
+	REG(GetRenderer)
+	REG(GetRendererInfo)
+//	REG(GetRendererOutputSize)
+//	REG(GetTextureAlphaMod)
+//	REG(GetTextureBlendMode)
+//	REG(GetTextureColorMod)
+//	REG(LockTexture)
+//	REG(QueryTexture)
+	REG(RenderClear)
+	REG(RenderCopy)
+	REG(RenderCopyEx)
+	REG(RenderDrawLine)
+	REG(RenderDrawLines)
+	REG(RenderDrawPoint)
+	REG(RenderDrawPoints)
+	REG(RenderDrawRect)
+	REG(RenderDrawRects)
+	REG(RenderFillRect)
+	REG(RenderFillRects)
+	REG(RenderGetClipRect)
+//	REG(RenderGetLogicalSize)
+//	REG(RenderGetScale)
+	REG(RenderGetViewport)
+//	REG(RenderIsClipEnabled)
+	REG(RenderPresent)
+//	REG(RenderReadPixels)
+	REG(RenderSetClipRect)
+	REG(RenderSetLogicalSize)
+	REG(RenderSetScale)
+	REG(RenderSetViewport)
+	REG(RenderTargetSupported)
+	REG(SetRenderDrawBlendMode)
+	REG(SetRenderDrawColor)
+	REG(SetRenderTarget)
+	REG(SetTextureAlphaMod)
+	REG(SetTextureBlendMode)
+	REG(SetTextureColorMod)
+//	REG(UnlockTexture)
+//	REG(UpdateTexture)
+//	REG(UpdateUYVTexture)
+	END
 	};
 	luaL_setfuncs(state, regs, 0);
 	return 1;

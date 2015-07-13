@@ -9,71 +9,70 @@ extern "C" int luaopen_SDL_gamecontroller(lua_State *state)
 	}
 	args [] =
 	{
-	 // SDL_GameControllerAxis
-	 {"CONTROLLER_AXIS_INVALID", SDL_CONTROLLER_AXIS_INVALID},
-	 {"CONTROLLER_AXIS_LEFTX", SDL_CONTROLLER_AXIS_LEFTX},
-	 {"CONTROLLER_AXIS_LEFTY", SDL_CONTROLLER_AXIS_LEFTY},
-	 {"CONTROLLER_AXIS_RIGHTX", SDL_CONTROLLER_AXIS_RIGHTX},
-	 {"CONTROLLER_AXIS_RIGHTY", SDL_CONTROLLER_AXIS_RIGHTY},
-	 {"CONTROLLER_AXIS_TRIGGERLEFT", SDL_CONTROLLER_AXIS_TRIGGERLEFT},
-	 {"CONTROLLER_AXIS_TRIGGERRIGHT", SDL_CONTROLLER_AXIS_TRIGGERRIGHT},
-	 {"CONTROLLER_AXIS_MAX", SDL_CONTROLLER_AXIS_MAX},
-	 // SDL_GameControllerButton
-	 {"CONTROLLER_BUTTON_INVALID", SDL_CONTROLLER_BUTTON_INVALID},
-	 {"CONTROLLER_BUTTON_A", SDL_CONTROLLER_BUTTON_A},
-	 {"CONTROLLER_BUTTON_B", SDL_CONTROLLER_BUTTON_B},
-	 {"CONTROLLER_BUTTON_X", SDL_CONTROLLER_BUTTON_X},
-	 {"CONTROLLER_BUTTON_Y", SDL_CONTROLLER_BUTTON_Y},
-	 {"CONTROLLER_BUTTON_BACK", SDL_CONTROLLER_BUTTON_BACK},
-	 {"CONTROLLER_BUTTON_GUIDE", SDL_CONTROLLER_BUTTON_GUIDE},
-	 {"CONTROLLER_BUTTON_START", SDL_CONTROLLER_BUTTON_START},
-	 {"CONTROLLER_BUTTON_LEFTSTICK", SDL_CONTROLLER_BUTTON_LEFTSTICK},
-	 {"CONTROLLER_BUTTON_RIGHTSTICK", SDL_CONTROLLER_BUTTON_RIGHTSTICK},
-	 {"CONTROLLER_BUTTON_LEFTSHOULDER", SDL_CONTROLLER_BUTTON_LEFTSHOULDER},
-	 {"CONTROLLER_BUTTON_RIGHTSHOULDER", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER},
-	 {"CONTROLLER_BUTTON_DPAD_UP", SDL_CONTROLLER_BUTTON_DPAD_UP},
-	 {"CONTROLLER_BUTTON_DPAD_DOWN", SDL_CONTROLLER_BUTTON_DPAD_DOWN},
-	 {"CONTROLLER_BUTTON_DPAD_LEFT", SDL_CONTROLLER_BUTTON_DPAD_LEFT},
-	 {"CONTROLLER_BUTTON_DPAD_RIGHT", SDL_CONTROLLER_BUTTON_DPAD_RIGHT},
-	 {"CONTROLLER_BUTTON_MAX", SDL_CONTROLLER_BUTTON_MAX},
-	 // SDL_GameControllerBindType
-	 {"CONTROLLER_BINDTYPE_NONE", SDL_CONTROLLER_BINDTYPE_NONE},
-	 {"CONTROLLER_BINDTYPE_BUTTON", SDL_CONTROLLER_BINDTYPE_BUTTON},
-	 {"CONTROLLER_BINDTYPE_AXIS", SDL_CONTROLLER_BINDTYPE_AXIS},
-	 {"CONTROLLER_BINDTYPE_HAT", SDL_CONTROLLER_BINDTYPE_HAT},
-	 // end
-	 {nullptr, 0}
+	// SDL_GameControllerAxis
+	ARG(CONTROLLER_AXIS_INVALID)
+	ARG(CONTROLLER_AXIS_LEFTX)
+	ARG(CONTROLLER_AXIS_LEFTY)
+	ARG(CONTROLLER_AXIS_RIGHTX)
+	ARG(CONTROLLER_AXIS_RIGHTY)
+	ARG(CONTROLLER_AXIS_TRIGGERLEFT)
+	ARG(CONTROLLER_AXIS_TRIGGERRIGHT)
+	ARG(CONTROLLER_AXIS_MAX)
+	// SDL_GameControllerButton
+	ARG(CONTROLLER_BUTTON_INVALID)
+	ARG(CONTROLLER_BUTTON_A)
+	ARG(CONTROLLER_BUTTON_B)
+	ARG(CONTROLLER_BUTTON_X)
+	ARG(CONTROLLER_BUTTON_Y)
+	ARG(CONTROLLER_BUTTON_BACK)
+	ARG(CONTROLLER_BUTTON_GUIDE)
+	ARG(CONTROLLER_BUTTON_START)
+	ARG(CONTROLLER_BUTTON_LEFTSTICK)
+	ARG(CONTROLLER_BUTTON_RIGHTSTICK)
+	ARG(CONTROLLER_BUTTON_LEFTSHOULDER)
+	ARG(CONTROLLER_BUTTON_RIGHTSHOULDER)
+	ARG(CONTROLLER_BUTTON_DPAD_UP)
+	ARG(CONTROLLER_BUTTON_DPAD_DOWN)
+	ARG(CONTROLLER_BUTTON_DPAD_LEFT)
+	ARG(CONTROLLER_BUTTON_DPAD_RIGHT)
+	ARG(CONTROLLER_BUTTON_MAX)
+	// SDL_GameControllerBindType
+	ARG(CONTROLLER_BINDTYPE_NONE)
+	ARG(CONTROLLER_BINDTYPE_BUTTON)
+	ARG(CONTROLLER_BINDTYPE_AXIS)
+	ARG(CONTROLLER_BINDTYPE_HAT)
+	END
 	};
-	for (auto reg=args; reg->name; ++reg)
+	for (auto r=args; r->name; ++r)
 	{
-	 lua_pushinteger(state, reg->param);
-	 lua_setfield(state, -2, reg->name);
+	 lua_pushinteger(state, r->param);
+	 lua_setfield(state, -2, r->name);
 	}
 	luaL_Reg regs [] =
 	{
-	 {"GameControllerAddMapping", lux_cast(SDL_GameControllerAddMapping)},
-//	 {"GameControllerAddMappingsFromFile", lux_cast(SDL_GameControllerAddMappingsFromFile)},
-//	 {"GameControllerAddMappingsFromRW", lux_cast(SDL_GameControllerAddMappingsFromeRW)},
-	 {"GameControllerClose", lux_cast(SDL_GameControllerClose)},
-	 {"GameControllerEventState", lux_cast(SDL_GameControllerEventState)},
-	 {"GameControllerGetAttached", lux_cast(SDL_GameControllerGetAttached)},
-	 {"GameControllerGetAxis", lux_cast(SDL_GameControllerGetAxis)},
-	 {"GameControllerGetAxisFromString", lux_cast(SDL_GameControllerGetAxisFromString)},
-	 {"GameControllerGetBidnForAxis", lux_cast(SDL_GameControllerGetBindForAxis)},
-	 {"GameControllerGetBindForButton", lux_cast(SDL_GameControllerGetBindForButton)},
-	 {"GameControllerGetButton", lux_cast(SDL_GameControllerGetButton)},
-	 {"GameControllerGetButtonFromString", lux_cast(SDL_GameControllerGetButtonFromString)},
-	 {"GameControllerGetJoystick", lux_cast(SDL_GameControllerGetJoystick)},
-	 {"GameControllerGetStringForAxis", lux_cast(SDL_GameControllerGetStringForAxis)},
-	 {"GameControllerGetStringForButton", lux_cast(SDL_GameControllerGetStringForButton)},
-	 {"GameControllerMapping", lux_cast(SDL_GameControllerMapping)},
-	 {"GameControllerMappingForGUID", lux_cast(SDL_GameControllerMappingForGUID)},
-	 {"GameControllerName", lux_cast(SDL_GameControllerName)},
-	 {"GameControllerNameForIndex", lux_cast(SDL_GameControllerNameForIndex)},
-	 {"GameControllerOpen", lux_cast(SDL_GameControllerOpen)},
-	 {"GameControllerUpdate", lux_cast(SDL_GameControllerUpdate)},
-	 {"IsGameController", lux_cast(SDL_IsGameController)},
-	 {nullptr, nullptr}
+	REG(GameControllerAddMapping)
+//	REG(GameControllerAddMappingsFromFile)
+//	REG(GameControllerAddMappingsFromRW)
+	REG(GameControllerClose)
+	REG(GameControllerEventState)
+	REG(GameControllerGetAttached)
+	REG(GameControllerGetAxis)
+	REG(GameControllerGetAxisFromString)
+	REG(GameControllerGetBindForAxis)
+	REG(GameControllerGetBindForButton)
+	REG(GameControllerGetButton)
+	REG(GameControllerGetButtonFromString)
+	REG(GameControllerGetJoystick)
+	REG(GameControllerGetStringForAxis)
+	REG(GameControllerGetStringForButton)
+	REG(GameControllerMapping)
+	REG(GameControllerMappingForGUID)
+	REG(GameControllerName)
+	REG(GameControllerNameForIndex)
+	REG(GameControllerOpen)
+	REG(GameControllerUpdate)
+	REG(IsGameController)
+	END
 	};
 	luaL_setfuncs(state, regs, 0);
 	return 1;

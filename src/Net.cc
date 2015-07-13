@@ -1,24 +1,8 @@
 #include "SDL.hpp"
 #include <SDL2/SDL_net.h>
 
-template <> luaL_Reg lux_Union<IPaddress>::index[] =
-{
-	lux_index(IPaddress, host),
-	lux_index(IPaddress, port)
-};
-
-template <> luaL_Reg lux_Union<UDPpacket>::index[] =
-{
-	lux_index(UDPpacket, channel),
-	lux_index(UDPpacket, data),
-	lux_index(UDPpacket, len),
-	lux_index(UDPpacket, maxlen),
-	lux_index(UDPpacket, status),
-	lux_subindex(UDPpacket, address)
-};
-
+#undef REG
 #define REG(name) {#name, lux_cast(SDLNet_##name)},
-#define END {nullptr, nullptr}
 
 extern "C" int luaopen_Net(lua_State *state)
 {

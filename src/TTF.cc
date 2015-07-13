@@ -1,5 +1,5 @@
-#include <SDL2/SDL_ttf.h>
 #include "SDL.hpp"
+#include <SDL2/SDL_ttf.h>
 
 static int GlyphMetrics(lua_State *state)
 {
@@ -155,6 +155,10 @@ static int RenderGlyph(lua_State *state)
 	return 1;
 }
 
+#undef REG
+#define REG(name) {#name, lux_cast(TTF_##name)},
+#undef ARG
+#define ARG(name) {#name, TTF_##name},
 
 extern "C" int luaopen_TTF(lua_State *state)
 {
@@ -169,53 +173,58 @@ extern "C" int luaopen_TTF(lua_State *state)
 	lux_newtype<TTF_Font*>(state, "Font");
 	struct {
 	 const char *name;
-	 int value;
+	 lua_Integer value;
 	}
 	args [] =
 	{
-	{"STYLE_NORMAL", TTF_STYLE_NORMAL},
-	{"STYLE_BOLD", TTF_STYLE_BOLD},
-	{"STYLE_ITALIC", TTF_STYLE_ITALIC},
-	{"STYLE_UNDERLINE", TTF_STYLE_UNDERLINE},
-	{"STRIKETHROUGH", TTF_STYLE_STRIKETHROUGH},
-	{"HINTING_NORMAL", TTF_HINTING_NORMAL},
-	{"HINTINT_LIGHT", TTF_HINTING_LIGHT},
-	{"HINTING_MONO", TTF_HINTING_MONO},
-	{"HINTING_NONE", TTF_HINTING_NONE},
-	{nullptr, 0}
+	ARG(STYLE_NORMAL)
+	ARG(STYLE_BOLD)
+	ARG(STYLE_ITALIC)
+	ARG(STYLE_UNDERLINE)
+	ARG(STYLE_STRIKETHROUGH)
+	ARG(HINTING_NORMAL)
+	ARG(HINTING_LIGHT)
+	ARG(HINTING_MONO)
+	ARG(HINTING_NONE)
+	END
 	};
+	for (auto r=args; r->name; ++r)
+	{
+	 lua_pushinteger(state, r->value);
+	 lua_setfield(state, -2, r->name);
+	}
 	luaL_Reg regs [] = 
 	{
-	{"OpenFont", lux_cast(TTF_OpenFont)},
-	{"OpenFontIndex", lux_cast(TTF_OpenFontIndex)},
-	{"OpenFontRW", lux_cast(TTF_OpenFontRW)},
-	{"OpenFontIndexRW", lux_cast(TTF_OpenFontIndexRW)},
-	{"GetFontStyle", lux_cast(TTF_GetFontStyle)},
-	{"SetFontStyle", lux_cast(TTF_SetFontStyle)},
-	{"GetFontOutline", lux_cast(TTF_GetFontOutline)},
-	{"SetFontOutline", lux_cast(TTF_SetFontOutline)},
-	{"GetFontHinting", lux_cast(TTF_GetFontHinting)},
-	{"SetFontHinting", lux_cast(TTF_SetFontHinting)},
-	{"FontHeight", lux_cast(TTF_FontHeight)},
-	{"FontAscent", lux_cast(TTF_FontAscent)},
-	{"FontDescent", lux_cast(TTF_FontDescent)},
-	{"FontLineSkip", lux_cast(TTF_FontLineSkip)},
-	{"GetFontKerning", lux_cast(TTF_GetFontKerning)},
-	{"SetFontKerning", lux_cast(TTF_SetFontKerning)},
-	{"FontFaces", lux_cast(TTF_FontFaces)},
-	{"FontFaceIsFixedWidth", lux_cast(TTF_FontFaceIsFixedWidth)},
-	{"FontFaceFamilyName", lux_cast(TTF_FontFaceFamilyName)},
-	{"FontFaceStyleName", lux_cast(TTF_FontFaceStyleName)},
-	{"GlyphIsProvided", lux_cast(TTF_GlyphIsProvided)},
+	REG(OpenFont)
+	REG(OpenFontIndex)
+	REG(OpenFontRW)
+	REG(OpenFontIndexRW)
+	REG(GetFontStyle)
+	REG(SetFontStyle)
+	REG(GetFontOutline)
+	REG(SetFontOutline)
+	REG(GetFontHinting)
+	REG(SetFontHinting)
+	REG(FontHeight)
+	REG(FontAscent)
+	REG(FontDescent)
+	REG(FontLineSkip)
+	REG(GetFontKerning)
+	REG(SetFontKerning)
+	REG(FontFaces)
+	REG(FontFaceIsFixedWidth)
+	REG(FontFaceFamilyName)
+	REG(FontFaceStyleName)
+	REG(GlyphIsProvided)
 	{"GlyphMetrics", GlyphMetrics},
 	{"SizeText", SizeText},
 	{"SizeUTF8", SizeUTF8},
 	{"RenderText", RenderText},
 	{"RenderUTF8", RenderUTF8},
 	{"RenderGlyph", RenderGlyph},
-	{"CloseFont", lux_cast(TTF_CloseFont)},
-	{"GetFontKerningSize", lux_cast(TTF_GetFontKerningSize)},
-	{nullptr, nullptr}
+	REG(CloseFont)
+	REG(GetFontKerningSize)
+	END
 	};
 	luaL_setfuncs(state, regs, 0);
 	return 1;

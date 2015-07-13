@@ -1,7 +1,6 @@
 #include "SDL.hpp"
 
 #define REG(name) {#name, lux_cast(SDL_##name)},
-#define END {nullptr, nullptr}
 
 static int RWclose(SDL_RWops *ops)
 {
