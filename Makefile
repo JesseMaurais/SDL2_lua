@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-std=c++11 -fpic
-SRC=audio.cc clipboard.cc cpuinfo.cc error.cc events.cc gamecontroller.cc GL.cc haptic.cc hints.cc joystick.cc keys.cc mouse.cc pixels.cc rect.cc render.cc rwops.cc std.cc surface.cc timer.cc video.cc
+SRC=audio.cc clipboard.cc cpuinfo.cc error.cc events.cc filesystem.cc gamecontroller.cc gesture.cc GL.cc haptic.cc hints.cc joystick.cc keys.cc messagebox.cc mouse.cc pixels.cc rect.cc render.cc rwops.cc shape.cc std.cc surface.cc timer.cc touch.cc video.cc
 OBJ=$(SRC:%.cc=SDL/%.so)
 
 all: $(OBJ) SDL.so TTF.so IMG.so Mix.so Net.so GFX.so
@@ -8,8 +8,8 @@ all: $(OBJ) SDL.so TTF.so IMG.so Mix.so Net.so GFX.so
 clean:
 	rm SDL/*.so *.so
 
-SDL/%.so: src/%.cc src/SDL.hpp SDL.so
-	$(CC) $(CFLAGS) -shared $< -o $@ -l:SDL.so -llux -lSDL2
+SDL/%.so: src/%.cc src/SDL.hpp
+	$(CC) $(CFLAGS) -shared $< -o $@ -llux -lSDL2
 
 SDL.so: src/SDL.cc src/SDL.hpp
 	$(CC) $(CFLAGS) -shared src/SDL.cc -o SDL.so -llux -lSDL2

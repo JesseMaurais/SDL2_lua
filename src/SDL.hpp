@@ -86,20 +86,6 @@ template <> SDL_Scancode lux_to<SDL_Scancode>(lua_State *state, int arg)
 }
 
 
-template <> void lux_push<SDL_JoystickGUID>(lua_State *state, SDL_JoystickGUID guid)
-{
-	SDL_memcpy(new (state) SDL_JoystickGUID, guid.data, sizeof(guid));
-}
-template <> SDL_JoystickGUID lux_to<SDL_JoystickGUID>(lua_State *state, int arg)
-{
-	SDL_JoystickGUID guid;
-	auto data = lua_touserdata(state, arg);
-	luaL_argcheck(state, data, arg, "GUID expected");
-	SDL_memcpy(guid.data, data, sizeof(guid));
-	return guid;
-}
-
-
 template <> void lux_push<SDL_RendererFlip>(lua_State *state, SDL_RendererFlip value)
 {
 	lua_pushinteger(state, value);
@@ -128,3 +114,48 @@ template <> SDL_TextureAccess lux_to<SDL_TextureAccess>(lua_State *state, int ar
 {
 	return (SDL_TextureAccess) luaL_checkinteger(state, arg);
 }
+
+
+template <> void lux_push<SDL_MessageBoxFlags>(lua_State *state, SDL_MessageBoxFlags value)
+{
+	lua_pushinteger(state, value);
+}
+template <> SDL_MessageBoxFlags lux_to<SDL_MessageBoxFlags>(lua_State *state, int arg)
+{
+	return (SDL_MessageBoxFlags) luaL_checkinteger(state, arg);
+}
+
+
+template <> void lux_push<SDL_MessageBoxButtonFlags>(lua_State *state, SDL_MessageBoxButtonFlags value)
+{
+	lua_pushinteger(state, value);
+}
+template <> SDL_MessageBoxButtonFlags lux_to<SDL_MessageBoxButtonFlags>(lua_State *state, int arg)
+{
+	return (SDL_MessageBoxButtonFlags) luaL_checkinteger(state, arg);
+}
+
+
+template <> void lux_push<SDL_MessageBoxColorType>(lua_State *state, SDL_MessageBoxColorType value)
+{
+	lua_pushinteger(state, value);
+}
+template <> SDL_MessageBoxColorType lux_to<SDL_MessageBoxColorType>(lua_State *state, int arg)
+{
+	return (SDL_MessageBoxColorType) luaL_checkinteger(state, arg);
+}
+
+
+template <> void lux_push<SDL_JoystickGUID>(lua_State *state, SDL_JoystickGUID guid)
+{
+	SDL_memcpy(new (state) SDL_JoystickGUID, guid.data, sizeof(guid));
+}
+template <> SDL_JoystickGUID lux_to<SDL_JoystickGUID>(lua_State *state, int arg)
+{
+	SDL_JoystickGUID guid;
+	auto data = lua_touserdata(state, arg);
+	luaL_argcheck(state, data, arg, "GUID expected");
+	SDL_memcpy(guid.data, data, sizeof(guid));
+	return guid;
+}
+

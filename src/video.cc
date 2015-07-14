@@ -1,5 +1,48 @@
 #include "SDL.hpp"
 
+static int GetWindowGammaRamp(lua_State *state)
+{
+	auto window = lux_to<SDL_Window*>(state, 1);
+	Uint16 R, G, B;
+	if (!SDL_GetWindowGammaRamp(window, &R, &G, &B))
+	{
+	 return lux_push(state, R, G, B);
+	}
+	return 0;
+}
+
+static int GetWindowMaximumSize(lua_State *state)
+{
+	auto window = lux_to<SDL_Window*>(state, 1);
+	int w, h;
+	SDL_GetWindowMaximumSize(window, &w, &h);
+	return lux_push(state, w, h);
+}
+
+static int GetWindowMinimumSize(lua_State *state)
+{
+	auto window = lux_to<SDL_Window*>(state, 1);
+	int w, h;
+	SDL_GetWindowMinimumSize(window, &w, &h);
+	return lux_push(state, w, h);
+}
+
+static int GetWindowPosition(lua_State *state)
+{
+	auto window = lux_to<SDL_Window*>(state, 1);
+	int x, y;
+	SDL_GetWindowPosition(window, &x, &y);
+	return lux_push(state, x, y);
+}
+
+static int GetWindowSize(lua_State *state)
+{
+	auto window = lux_to<SDL_Window*>(state, 1);
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+	return lux_push(state, w, h);
+}
+
 extern "C" int luaopen_SDL_video(lua_State *state)
 {
 	luaL_newmetatable(state, SDL_METATABLE);
@@ -11,7 +54,7 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 	{
 	ARG(WINDOWPOS_UNDEFINED)
 	ARG(WINDOWPOS_CENTERED)
-	 // SDL_WindowFlags
+	// SDL_WindowFlags
 	ARG(WINDOW_FULLSCREEN)
 	ARG(WINDOW_OPENGL)
 	ARG(WINDOW_SHOWN)
@@ -27,7 +70,7 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 	ARG(WINDOW_FOREIGN)
 	ARG(WINDOW_ALLOW_HIGHDPI)
 //	ARG(WINDOW_MOUSE_CAPTURE)
-	 // SDL_WindowEventID
+	// SDL_WindowEventID
 	ARG(WINDOWEVENT_SHOWN)
 	ARG(WINDOWEVENT_HIDDEN)
 	ARG(WINDOWEVENT_EXPOSED)
@@ -42,7 +85,7 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 	ARG(WINDOWEVENT_FOCUS_GAINED)
 	ARG(WINDOWEVENT_FOCUS_LOST)
 	ARG(WINDOWEVENT_CLOSE)
-/*	 // SDL_HitTestResult
+/*	// SDL_HitTestResult
 	ARG(HITTEST_NORMAL)
 	ARG(HITTEST_DRAGGABLE)
 	ARG(HITTEST_RESIZE_TOPLEFT)
@@ -82,17 +125,17 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 	REG(GetWindowBrightness)
 	REG(GetWindowData)
 	REG(GetWindowDisplayIndex)
-//	REG(GetWindowDisplayMode)
+	REG(GetWindowDisplayMode)
 	REG(GetWindowFlags)
 	REG(GetWindowFromID)
-//	REG(GetWindowGammaRamp)
+	{"GetWindowGammaRamp", GetWindowGammaRamp},
 	REG(GetWindowGrab)
 	REG(GetWindowID)
-//	REG(GetWindowMaximumSize)
-//	REG(GetWindowMinimumSize)
+	{"GetWindowMaximumSize", GetWindowMaximumSize},
+	{"GetWindowMinimumSize", GetWindowMinimumSize},
 	REG(GetWindowPixelFormat)
-//	REG(GetWindowPosition)
-//	REG(GetWindowSize)
+	{"GetWindowPosition", GetWindowPosition},
+	{"GetWindowSize", GetWindowSize},
 	REG(GetWindowSurface)
 	REG(GetWindowTitle)
 //	REG(GetWindowWMInfo)
@@ -110,7 +153,7 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 	REG(SetWindowGammaRamp)
 	REG(SetWindowGrab)
 //	REG(SetWindowHitTest)
-//	REG(SetWindowIcon)
+	REG(SetWindowIcon)
 	REG(SetWindowMaximumSize)
 	REG(SetWindowMinimumSize)
 	REG(SetWindowPosition)
