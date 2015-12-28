@@ -1,9 +1,14 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include "Common.h"
 
-extern "C" int luaopen_GFX(lua_State *state)
+extern "C" int luaopen_SDL_gfx(lua_State *state)
 {
-	luaL_newmetatable(state, GFX_METATABLE);
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
+	}
 	luaL_Reg regs [] =
 	{
 	{"Pixel", lux_cast(pixelRGBA)},

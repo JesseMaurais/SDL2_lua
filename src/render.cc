@@ -1,4 +1,6 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 static int CreateWindowAndRenderer(lua_State *state)
 {
@@ -7,24 +9,24 @@ static int CreateWindowAndRenderer(lua_State *state)
 	int w = lua_tointeger(state, 1);
 	int h = lua_tointeger(state, 2);
 	int f = lua_tointeger(state, 3);
-	if (SDL_CreateWindowAndRenderer(w, h, f, &window, &renderer))
+	if (!SDL_CreateWindowAndRenderer(w, h, f, &window, &renderer))
 	{
-	 return 0;
+		return lux_push(state, window, renderer);
 	}
-	else
-	{
-	 return lux_push(state, window, renderer);
-	}
+	return 0;
 }
 
 extern "C" int luaopen_SDL_render(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	// Register types for render
+	luaL_newmetatable(state, Type<SDL_Renderer>::name);
+	lua_pop(state, 1);
+	// Register functions for render
+	lux_Reg<lua_Integer> args[] =
 	{
 	// SDL_RendererFlags
 	ARG(RENDERER_SOFTWARE)
@@ -45,11 +47,7 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	ARG(TEXTUREMODULATE_ALPHA)
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] =
 	{
 	REG(CreateRenderer)

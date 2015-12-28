@@ -1,13 +1,20 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 extern "C" int luaopen_SDL_audio(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	// Video subsystem initialization
+	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
+	{
+		auto error = SDL_GetError();
+		return luaL_error(state, "SDL_InitSubSystem: %s", error);
+	}
+	lux_Reg<lua_Integer> args [] =
 	{
 	// SDL_AudioStatus
 	ARG(AUDIO_STOPPED)
@@ -39,11 +46,7 @@ extern "C" int luaopen_SDL_audio(lua_State *state)
 	{"AUDIO_F32", AUDIO_F32},
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] =
 	{
 //	REG(AudioInit)
@@ -78,6 +81,6 @@ extern "C" int luaopen_SDL_audio(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 0;
+	return 1;
 }
 

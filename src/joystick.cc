@@ -1,13 +1,19 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 extern "C" int luaopen_SDL_joystick(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+	{
+		auto error = SDL_GetError();
+		return luaL_error(state, "SDL_InitSubSystem: %s", error);
+	}
+	lux_Reg<lua_Integer> args[] =
 	{
 	ARG(HAT_CENTERED)
 	ARG(HAT_UP)
@@ -20,11 +26,7 @@ extern "C" int luaopen_SDL_joystick(lua_State *state)
 	ARG(HAT_LEFTDOWN)
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] =
 	{
 	REG(JoystickClose)

@@ -1,13 +1,14 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 extern "C" int luaopen_SDL_mouse(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	lux_Reg<lua_Integer> args[] =
 	{
 	// SDL_SystemCursor
 	ARG(SYSTEM_CURSOR_ARROW)
@@ -23,11 +24,7 @@ extern "C" int luaopen_SDL_mouse(lua_State *state)
 	ARG(SYSTEM_CURSOR_HAND)
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] =
 	{
 //	REG(CaptureMouse)

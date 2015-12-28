@@ -1,7 +1,5 @@
-#!/usr/bin/lua
-
 SDL = require 'SDL'
-TTF = require 'TTF'
+TTF = require 'SDL.ttf'
 require 'SDL.video'
 require 'SDL.events'
 require 'SDL.surface'
@@ -16,5 +14,6 @@ SDL.BlitSurface(text, nil, surface, nil)
 SDL.FreeSurface(text)
 SDL.ShowWindow(window)
 SDL.UpdateWindowSurface(window)
-repeat SDL.WaitEvent(SDL.event) until SDL.event.type == SDL.QUIT
+event = SDL.Event.new()
+repeat SDL.WaitEvent(event) until event:type() == SDL.QUIT
 SDL.DestroyWindow(window)

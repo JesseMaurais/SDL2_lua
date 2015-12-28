@@ -1,5 +1,7 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include "Common.h"
 
 template <> Mix_MusicType lux_to<Mix_MusicType>(lua_State *state, int arg)
 {
@@ -57,18 +59,19 @@ static int PlayChannel(int channel, Mix_Chunk *chunk, int loops)
 #undef REG
 #define REG(name) {#name, lux_cast(Mix_##name)},
 
-extern "C" int luaopen_Mix(lua_State *state)
+extern "C" int luaopen_SDL_mixer(lua_State *state)
 {
-	if (!Mix_Init(MIX_INIT_MP3))
+	if (!Mix_Init(MIX_INIT_FLAC|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OGG))
 	{
 		const char *error = Mix_GetError();
 		return luaL_error(state, "Mix_Init: %s", error);
 	}
-	else atexit(Mix_Quit);
-
-	luaL_newmetatable(state, MIX_METATABLE);
-	lux_newtype<Mix_Music*>(state, "Music");
-	lux_newtype<Mix_Chunk*>(state, "Chunk");
+	else 
+	if (atexit(Mix_Quit))
+	{
+		return luaL_error(state, "Cannot make exit (atexit < 0)");
+	}
+	luaL_newmetatable(state, "SDL2_mixer");
 	luaL_Reg regs [] =
 	{
 	REG(OpenAudio)

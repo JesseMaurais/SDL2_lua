@@ -1,13 +1,19 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 extern "C" int luaopen_SDL_gamecontroller(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer param;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
+	{
+		auto error = SDL_GetError();
+		return luaL_error(state, "SDL_InitSubSystem: %s", error);
+	}
+	lux_Reg<lua_Integer> args [] =
 	{
 	// SDL_GameControllerAxis
 	ARG(CONTROLLER_AXIS_INVALID)
@@ -43,11 +49,7 @@ extern "C" int luaopen_SDL_gamecontroller(lua_State *state)
 	ARG(CONTROLLER_BINDTYPE_HAT)
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->param);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] =
 	{
 	REG(GameControllerAddMapping)

@@ -1,33 +1,28 @@
 CC=g++
-CFLAGS=-std=c++11 -fpic
-SRC=audio.cc clipboard.cc cpuinfo.cc error.cc events.cc filesystem.cc gamecontroller.cc gesture.cc GL.cc haptic.cc hints.cc joystick.cc keys.cc messagebox.cc mouse.cc pixels.cc rect.cc render.cc rwops.cc shape.cc std.cc surface.cc timer.cc touch.cc video.cc
-OBJ=$(SRC:%.cc=SDL/%.so)
+CFLAGS=-std=c++11 -fPIC
+OBJ=audio.so clipboard.so cpuinfo.so error.so events.so filesystem.so gamecontroller.so gesture.so gfx.so haptic.so hints.so image.so joystick.so keys.so main.so messagebox.so mixer.so mouse.so net.so opengl.so pixels.so rect.so render.so rwops.so shape.so stdinc.so surface.so timer.so touch.so ttf.so video.so
+LIB=$(addprefix SDL/,$(OBJ))
 
-all: $(OBJ) SDL.so TTF.so IMG.so Mix.so Net.so GFX.so
+all: $(LIB)
 
 clean:
-	rm SDL/*.so *.so
+	rm $(LIB)
 
-SDL/%.so: src/%.cc src/SDL.hpp
-	$(CC) $(CFLAGS) -shared $< -o $@ -llux -lSDL2
+SDL/%.so: src/%.cc src/Common.h
+	$(CC) $(CFLAGS) -shared $< -o $@ -lSDL2
 
-SDL.so: src/SDL.cc src/SDL.hpp
-	$(CC) $(CFLAGS) -shared src/SDL.cc -o SDL.so -llux -lSDL2
+SDL/ttf.so: src/ttf.cc src/Common.h
+	$(CC) $(CFLAGS) -shared $< -o $@ -lSDL2_ttf
 
-TTF.so: src/TTF.cc src/SDL.hpp
-	$(CC) $(CFLAGS) -shared src/TTF.cc -o TTF.so -llux -lSDL2_ttf
+SDL/image.so: src/image.cc src/Common.h
+	$(CC) $(CFLAGS) -shared $< -o $@ -lSDL2_image
 
-IMG.so: src/IMG.cc src/SDL.hpp
-	$(CC) $(CFLAGS) -shared src/IMG.cc -o IMG.so -llux -lSDL2_image
+SDL/mixer.so: src/mixer.cc src/Common.h
+	$(CC) $(CFLAGS) -shared $< -o $@ -lSDL2_mixer
 
-Mix.so: src/Mix.cc src/SDL.hpp
-	$(CC) $(CFLAGS) -shared src/Mix.cc -o Mix.so -llux -lSDL2_mixer
+SDL/net.so: src/net.cc src/Common.h
+	$(CC) $(CFLAGS) -shared $< -o $@ -lSDL2_net
 
-Net.so: src/Net.cc src/SDL.hpp
-	$(CC) $(CFLAGS) -shared src/Net.cc -o Net.so -llux -lSDL2_net
+SDL/gfx.so: src/gfx.cc src/Common.h
+	$(CC) $(CFLAGS) -shared $< -o $@ -lSDL2_gfx
 
-GFX.so: src/GFX.cc src/SDL.hpp
-	$(CC) $(CFLAGS) -shared src/GFX.cc -o GFX.so -llux -lSDL2_gfx
-
-test:
-	lua -e 'require "SDL"'

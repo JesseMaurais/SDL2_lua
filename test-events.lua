@@ -1,5 +1,3 @@
-#!/usr/bin/lua
-
 SDL = require 'SDL'
 require 'SDL.events'
 require 'SDL.video'
@@ -13,7 +11,9 @@ window = SDL.CreateWindow(
 	SDL.WINDOW_SHOWN -- flags
 	)
 
+-- Create an event record for receiving device input
+event = SDL.Event.new()
 -- Continue to process events until the window is closed
-repeat SDL.WaitEvent(SDL.event) until SDL.event.type == SDL.QUIT
+repeat SDL.WaitEvent(event) until event:type() == SDL.QUIT
 
 SDL.DestroyWindow(window)

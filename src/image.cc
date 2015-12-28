@@ -1,19 +1,24 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "Common.h"
 
 #undef REG
 #define REG(name) {#name, lux_cast(IMG_##name)},
 
-extern "C" int luaopen_IMG(lua_State *state)
+extern "C" int luaopen_SDL_image(lua_State *state)
 {
-	if (!IMG_Init(IMG_INIT_PNG))
+	if (!IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG|IMG_INIT_TIF))
 	{
 		const char *error = IMG_GetError();
 		return luaL_error(state, "IMG_Init: %s", error);
 	}
-	else atexit(IMG_Quit);
-
-	luaL_newmetatable(state, IMG_METATABLE);
+	else
+	if (atexit(IMG_Quit))
+	{
+		return luaL_error(state, "Cannot make exit (atexit < 0)");
+	}
+	luaL_newmetatable(state, "SDL2_image");
 	luaL_Reg regs [] =
 	{
 	REG(Load)

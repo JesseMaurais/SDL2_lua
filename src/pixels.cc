@@ -1,4 +1,6 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 static int GetRGB(lua_State *state)
 {
@@ -32,12 +34,11 @@ static int PixelFormatEnumToMasks(lua_State *state)
 
 extern "C" int luaopen_SDL_pixels(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	lux_Reg<lua_Integer> args[] =
 	{
 	 // SDL_PixelFormatEnum
 	ARG(PIXELFORMAT_UNKNOWN)
@@ -121,11 +122,7 @@ extern "C" int luaopen_SDL_pixels(lua_State *state)
 	ARG(PACKEDLAYOUT_1010102)
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] = 
 	{
 	REG(AllocFormat)

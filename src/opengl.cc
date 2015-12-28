@@ -1,18 +1,20 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 #undef REG
 #define REG(name) {#name, lux_cast(SDL_GL_##name)},
 #undef ARG
 #define ARG(name) {#name, SDL_GL_##name},
 
-extern "C" int luaopen_SDL_GL(lua_State *state)
+extern "C" int luaopen_SDL_opengl(lua_State *state)
 {
-	luaL_newmetatable(state, GLC_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] = 
+	lua_newtable(state);
+	lux_Reg<lua_Integer> args[] = 
 	{
 	// SDL_GLattr
 	ARG(RED_SIZE)
@@ -49,11 +51,7 @@ extern "C" int luaopen_SDL_GL(lua_State *state)
 	ARG(CONTEXT_RESET_ISOLATION_FLAG)
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] =
 	{
 	REG(BindTexture)
@@ -77,11 +75,7 @@ extern "C" int luaopen_SDL_GL(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	// _G.GL = SDL.GL = GL
-	luaL_newmetatable(state, SDL_METATABLE);
-	lua_pushvalue(state, -2);
-	lua_setfield(state, -2, GLC_METATABLE);
-	lua_pop(state, 1);
+	lua_setfield(state, -2, "GL");
 	return 1;
 }
 

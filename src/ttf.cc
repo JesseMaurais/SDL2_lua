@@ -1,15 +1,16 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include "Common.h"
 
 static int GlyphMetrics(lua_State *state)
 {
 	auto font = lux_to<TTF_Font*>(state, 1);
-	auto ch = lux_to<Uint16>(state, 2);
+	auto code = lux_to<Uint16>(state, 2);
 	int minx, maxx, miny, maxy, advance;
-	if (TTF_GlyphMetrics(font, ch, &minx, &maxx, &miny, &maxy, &advance))
+	if (TTF_GlyphMetrics(font, code, &minx, &maxx, &miny, &maxy, &advance))
 	{
-	 lux_push(state, minx, maxx, miny, maxy, advance);
-	 return 5;
+	 return lux_push(state, minx, maxx, miny, maxy, advance);
 	}
 	return 0;
 }
@@ -160,22 +161,25 @@ static int RenderGlyph(lua_State *state)
 #undef ARG
 #define ARG(name) {#name, TTF_##name},
 
-extern "C" int luaopen_TTF(lua_State *state)
+template <> const char *Type<TTF_Font>::name = "Font";
+
+extern "C" int luaopen_SDL_ttf(lua_State *state)
 {
-	if (TTF_Init())
+	if (TTF_Init() < 0)
 	{
 		const char *error = TTF_GetError();
 		return luaL_error(state, "TTF_Init: %s", error);
 	}
-	else atexit(TTF_Quit);
-
-	luaL_newmetatable(state, TTF_METATABLE);
-	lux_newtype<TTF_Font*>(state, "Font");
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	else
+	if (atexit(TTF_Quit))
+	{
+		return luaL_error(state, "Cannot make exit (atexit < 0)");
 	}
-	args [] =
+
+	luaL_newmetatable(state, "SDL2_ttf");
+	luaL_newmetatable(state, Type<TTF_Font>::name);
+	lua_pop(state, 1);
+	lux_Reg<lua_Integer> args[] =
 	{
 	ARG(STYLE_NORMAL)
 	ARG(STYLE_BOLD)
@@ -188,11 +192,7 @@ extern "C" int luaopen_TTF(lua_State *state)
 	ARG(HINTING_NONE)
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] = 
 	{
 	REG(OpenFont)

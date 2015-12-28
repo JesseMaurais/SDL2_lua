@@ -1,30 +1,27 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_shape.h>
+#include "Common.h"
 
 extern "C" int luaopen_SDL_shape(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	lux_Reg<lua_Integer> args[] =
 	{
 	ARG(NONSHAPEABLE_WINDOW)
 	ARG(INVALID_SHAPE_ARGUMENT)
 	ARG(WINDOW_LACKS_SHAPE)
-	// WindowShaopeMode
+	// WindowShapeMode
 	{"ShapeModeDefault", ShapeModeDefault},
 	{"ShapeModeBinarizeAlpha", ShapeModeBinarizeAlpha},
 	{"ShapeModeReverseBinarizeAlpha", ShapeModeReverseBinarizeAlpha},
 	{"ShapeModeColorKey", ShapeModeColorKey},
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs []
 	{
 	REG(CreateShapedWindow)

@@ -1,31 +1,25 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
+#include "Common.h"
 
 #undef REG
 #define REG(name) {#name, lux_cast(SDLNet_##name)},
 
-extern "C" int luaopen_Net(lua_State *state)
+extern "C" int luaopen_SDL_net(lua_State *state)
 {
-	if (SDLNet_Init())
+	if (SDLNet_Init() < 0)
 	{
 		const char *error = SDLNet_GetError();
 		return luaL_error(state, "SDLNet_Init: %s", error);
 	}
-	else atexit(SDLNet_Quit);
-
-	luaL_newmetatable(state, NET_METATABLE);
-	lux_newtype<IPaddress*>(state, "IPaddress");
-	lux_newtype<TCPsocket>(state, "TCPsocket");
-	lux_newtype<UDPsocket>(state, "UDPsocket");
-	lux_newtype<UDPpacket*>(state, "UDPpacket");
-	lux_newtype<UDPpacket**>(state, "UDPpacketV");
-	lux_newtype<SDLNet_SocketSet>(state, "SocketSet");
-	lux_newtype<SDLNet_GenericSocket>(state, "GenericSocket");
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	else
+	if (atexit(SDLNet_Quit))
+	{
+		return luaL_error(state, "Cannot make exit (atexit < 0)");
 	}
-	args [] =
+	luaL_newmetatable(state, "SDL2_net");
+	lux_Reg<lua_Integer> args[] =
 	{
 	{"INADDR_ANY", INADDR_ANY},
 	{"INADDR_NONE", INADDR_NONE},
@@ -33,11 +27,7 @@ extern "C" int luaopen_Net(lua_State *state)
 	{"INADDR_BROADCAST", INADDR_BROADCAST},
 	{nullptr, 0}
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs [] =
 	{
 	REG(ResolveHost)

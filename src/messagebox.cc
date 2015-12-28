@@ -1,13 +1,14 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 extern "C" int luaopen_SDL_messagebox(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	lux_Reg<lua_Integer> args[] =
 	{
 	// SDL_MessageBoxFlags
 	ARG(MESSAGEBOX_ERROR)
@@ -24,6 +25,7 @@ extern "C" int luaopen_SDL_messagebox(lua_State *state)
 //	ARG(MESSGAEBOX_COLOR_BUTTON_SELECTED)
 	END
 	};
+	lux_settable(state, args);
 	luaL_Reg regs [] =
 	{
 	REG(ShowMessageBox)

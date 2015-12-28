@@ -1,6 +1,6 @@
-#include "SDL.hpp"
-
-#define REG(name) {#name, lux_cast(SDL_##name)},
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 static int RWclose(SDL_RWops *ops)
 {
@@ -34,7 +34,10 @@ static size_t RWwrite(SDL_RWops *ops, void *ptr, size_t size, size_t items)
 
 extern "C" int luaopen_SDL_rwops(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
+	}
 	luaL_Reg regs [] =
 	{
 	REG(AllocRW)

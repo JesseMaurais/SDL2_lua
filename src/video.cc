@@ -1,4 +1,6 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 static int GetWindowGammaRamp(lua_State *state)
 {
@@ -45,12 +47,22 @@ static int GetWindowSize(lua_State *state)
 
 extern "C" int luaopen_SDL_video(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
-	struct {
-	 const char *name;
-	 lua_Integer value;
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
 	}
-	args [] =
+	// Video subsystem initialization
+	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
+	{
+		auto error = SDL_GetError();
+		return luaL_error(state, "SDL_InitSubSystem: %s", error);
+	}
+	// Register types for video
+	luaL_newmetatable(state, Type<SDL_DisplayMode>::name);
+	luaL_newmetatable(state, Type<SDL_Window>::name);
+	lua_pop(state, 2);
+	// Register functions for video
+	lux_Reg<lua_Integer> args[] =
 	{
 	ARG(WINDOWPOS_UNDEFINED)
 	ARG(WINDOWPOS_CENTERED)
@@ -99,11 +111,7 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 */
 	END
 	};
-	for (auto r=args; r->name; ++r)
-	{
-	 lua_pushinteger(state, r->value);
-	 lua_setfield(state, -2, r->name);
-	}
+	lux_settable(state, args);
 	luaL_Reg regs[] =
 	{
 	REG(CreateWindow)

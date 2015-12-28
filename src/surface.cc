@@ -1,4 +1,6 @@
-#include "SDL.hpp"
+#include <lux/lux.hpp>
+#include <SDL2/SDL.h>
+#include "Common.h"
 
 static SDL_Surface *LoadBMP(const char *path)
 {
@@ -12,7 +14,15 @@ static int SaveBMP(SDL_Surface *surface, const char *path)
 
 extern "C" int luaopen_SDL_surface(lua_State *state)
 {
-	luaL_newmetatable(state, SDL_METATABLE);
+	// Get the module's metatable
+	if (!luaL_getmetatable(state, SDL_METATABLE))
+	{
+		return luaL_error(state, SDL_REQUIRED);
+	}
+	// Register types for surface
+	luaL_newmetatable(state, Type<SDL_Surface>::name);
+	lua_pop(state, 1);
+	// Register functions for surface
 	luaL_Reg regs [] =
 	{
 	REG(BlitScaled)
