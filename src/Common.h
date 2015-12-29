@@ -7,6 +7,7 @@
 template <class T> using Type = lux_Type<T*>;
 template <> const char *Type<SDL_DisplayMode>::name = "DisplayMode";
 template <> const char *Type<SDL_Renderer>::name = "Renderer";
+template <> const char *Type<SDL_Texture>::name = "Texture";
 template <> const char *Type<SDL_Window>::name = "Window";
 template <> const char *Type<SDL_Surface>::name = "Surface";
 

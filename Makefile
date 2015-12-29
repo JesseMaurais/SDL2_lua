@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-std=c++11 -fPIC
+CFLAGS=-std=c++11 -g -fPIC
 OBJ=audio.so clipboard.so cpuinfo.so error.so events.so filesystem.so gamecontroller.so gesture.so gfx.so haptic.so hints.so image.so joystick.so keys.so main.so messagebox.so mixer.so mouse.so net.so opengl.so pixels.so rect.so render.so rwops.so shape.so stdinc.so surface.so timer.so touch.so ttf.so video.so
 LIB=$(addprefix SDL/,$(OBJ))
 

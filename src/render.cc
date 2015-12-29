@@ -24,7 +24,8 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	}
 	// Register types for render
 	luaL_newmetatable(state, Type<SDL_Renderer>::name);
-	lua_pop(state, 1);
+	luaL_newmetatable(state, Type<SDL_Texture>::name);
+	lua_pop(state, 2);
 	// Register functions for render
 	lux_Reg<lua_Integer> args[] =
 	{
@@ -54,7 +55,7 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	REG(CreateSoftwareRenderer)
 	REG(CreateTexture)
 	REG(CreateTextureFromSurface)
-	REG(CreateWindowAndRenderer)
+	{"CreateWindowAndRenderer", CreateWindowAndRenderer},
 	REG(DestroyRenderer)
 	REG(DestroyTexture)
 	REG(GetNumRenderDrivers)
