@@ -222,7 +222,6 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 
 	luaL_newmetatable(state, Type<SDL_DisplayMode>::name);
 	luaL_newmetatable(state, Type<SDL_Window>::name);
-	lua_pop(state, 2);
 
 	/* Done */
 
