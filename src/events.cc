@@ -10,6 +10,8 @@ template <> luaL_Reg lux_Class<SDL_Event>::index[] =
 
 extern "C" int luaopen_SDL_events(lua_State *state)
 {
+	/* Initialize */
+
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
@@ -19,6 +21,9 @@ extern "C" int luaopen_SDL_events(lua_State *state)
 		auto error = SDL_GetError();
 		return luaL_error(state, "SDL_InitSubSystem: %s", error);
 	}
+
+	/* Parameters */
+
 	lux_Reg<lua_Integer> args [] =
 	{
 	// SDL_EventType
@@ -86,6 +91,9 @@ extern "C" int luaopen_SDL_events(lua_State *state)
 	END
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs [] = 
 	{
 //	REG(AddEventWatch)
@@ -117,10 +125,14 @@ extern "C" int luaopen_SDL_events(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	// Open access to struct members
-	lua_pushliteral(state, "Event");
-	lux_Class<SDL_Event>::open(state);
-	lua_settable(state, -3);
+
+	/* Classes */
+
+	lux_Class<SDL_Event>::require(state);
+	lua_setfield(state, -2, "Event");
+
+	/* Done */
+	
 	return 1;
 }
  

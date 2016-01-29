@@ -2,6 +2,16 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
+template <> luaL_Reg lux_Class<SDL_Surface>::index[] =
+	{
+	{"format", lux_member(SDL_Surface, format)},
+	{"w", lux_member(SDL_Surface, w)},
+	{"h", lux_member(SDL_Surface, h)},
+	{"pitch", lux_member(SDL_Surface, pitch)},
+	{"pixels", lux_member(SDL_Surface, pixels)},
+	{nullptr}
+	};
+
 static SDL_Surface *LoadBMP(const char *path)
 {
 	return SDL_LoadBMP(path);
@@ -14,15 +24,15 @@ static int SaveBMP(SDL_Surface *surface, const char *path)
 
 extern "C" int luaopen_SDL_surface(lua_State *state)
 {
-	// Get the module's metatable
+	/* Initialize */
+
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
-	// Register types for surface
-	luaL_newmetatable(state, Type<SDL_Surface>::name);
-	lua_pop(state, 1);
-	// Register functions for surface
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(BlitScaled)
@@ -58,6 +68,14 @@ extern "C" int luaopen_SDL_surface(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
+
+	/* Classes */
+
+	lux_Class<SDL_Surface>::require(state);
+	lua_pop(state, 1);
+
+	/* Done */
+
 	return 1;
 }
 

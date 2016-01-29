@@ -5,10 +5,15 @@
 #define SDL_REQUIRED "Must require 'SDL' module"
 
 template <class T> using Type = lux_Type<T*>;
-template <> const char *Type<SDL_DisplayMode>::name = "DisplayMode";
+
 template <> const char *Type<SDL_Renderer>::name = "Renderer";
 template <> const char *Type<SDL_Texture>::name = "Texture";
 template <> const char *Type<SDL_Window>::name = "Window";
+template <> const char *Type<SDL_Event>::name = "Event";
+
+template <> const char *Type<SDL_Color>::name = "Color";
+template <> const char *Type<SDL_Palette>::name = "Palette";
+template <> const char *Type<SDL_PixelFormat>::name = "PixelFormat";
 template <> const char *Type<SDL_Surface>::name = "Surface";
 
 #define REG(name) {#name, lux_cast(SDL_##name)},

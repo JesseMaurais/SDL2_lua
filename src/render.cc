@@ -16,19 +16,121 @@ static int CreateWindowAndRenderer(lua_State *state)
 	return 0;
 }
 
+static int GetRenderDrawBlendMode(lua_State *state)
+{
+	SDL_BlendMode mode;
+	auto renderer = lux_to<SDL_Renderer*>(state, 1);
+	if (!SDL_GetRenderDrawBlendMode(renderer, &mode))
+	{
+	 lua_pushinteger(state, mode);
+	 return 1;
+	}
+	return 0;
+}
+
+static int GetRenderDrawColor(lua_State *state)
+{
+	Uint8 r, g, b, a;
+	auto renderer = lux_to<SDL_Renderer*>(state, 1);
+	if (!SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a))
+	{
+	 return lux_push(state, r, g, b, a);
+	}
+	return 0;
+}
+
+static int GetRendererOutputSize(lua_State *state)
+{
+	int w, h;
+	auto renderer = lux_to<SDL_Renderer*>(state, 1);
+	if (!SDL_GetRendererOutputSize(renderer, &w, &h))
+	{
+	 return lux_push(state, w, h);
+	}
+	return 0;
+}
+
+static int GetTextureAlphaMod(lua_State *state)
+{
+	Uint8 mod;
+	auto texture = lux_to<SDL_Texture*>(state, 1);
+	if (!SDL_GetTextureAlphaMod(texture, &mod))
+	{
+	 lua_pushinteger(state, mod);
+	 return 1;
+	}
+	return 0;
+}
+
+static int GetTextureBlendMode(lua_State *state)
+{
+	SDL_BlendMode mode;
+	auto texture = lux_to<SDL_Texture*>(state, 1);
+	if (!SDL_GetTextureBlendMode(texture, &mode))
+	{
+	 lua_pushinteger(state, mode);
+	 return 1;
+	}
+	return 0;
+}
+
+static int GetTextureColorMod(lua_State *state)
+{
+	Uint8 r, g, b;
+	auto texture = lux_to<SDL_Texture*>(state, 1);
+	if (!SDL_GetTextureColorMod(texture, &r, &g, &b))
+	{
+	 return lux_push(state, r, g, b);
+	}
+	return 1;
+}
+
+static int QueryTexture(lua_State *state)
+{
+	Uint32 format;
+	int access, w, h;
+	auto texture = lux_to<SDL_Texture*>(state, 1);
+	if (!SDL_QueryTexture(texture, &format, &access, &w, &h))
+	{
+	 return lux_push(state, format, access, w, h);
+	}
+	return 0;
+}
+
+static int RenderGetLogicalSize(lua_State *state)
+{
+	int w, h;
+	auto renderer = lux_to<SDL_Renderer*>(state, 1);
+	SDL_RenderGetLogicalSize(renderer, &w, &h);
+	return lux_push(state, w, h);
+}
+
+static int RenderGetScale(lua_State *state)
+{
+	float scaleX, scaleY;
+	auto renderer = lux_to<SDL_Renderer*>(state, 1);
+	SDL_RenderGetScale(renderer, &scaleX, &scaleY);
+	return lux_push(state, scaleX, scaleY);
+}
+
 extern "C" int luaopen_SDL_render(lua_State *state)
 {
+	/* Initialize */
+
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
-	// Register types for render
-	luaL_newmetatable(state, Type<SDL_Renderer>::name);
-	luaL_newmetatable(state, Type<SDL_Texture>::name);
-	lua_pop(state, 2);
-	// Register functions for render
+
+	/* Parameters */
+
 	lux_Reg<lua_Integer> args[] =
 	{
+	// SDL_BlendMode
+	ARG(BLENDMODE_NONE)
+	ARG(BLENDMODE_BLEND)
+	ARG(BLENDMODE_ADD)
+	ARG(BLENDMODE_MOD)
 	// SDL_RendererFlags
 	ARG(RENDERER_SOFTWARE)
 	ARG(RENDERER_ACCELERATED)
@@ -49,6 +151,9 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	END
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(CreateRenderer)
@@ -59,18 +164,18 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	REG(DestroyRenderer)
 	REG(DestroyTexture)
 	REG(GetNumRenderDrivers)
-//	REG(GetRenderDrawBlendMode)
-	REG(GetRenderDrawColor)
+	{"GetRenderDrawBlendMode", GetRenderDrawBlendMode},
+	{"GetRenderDrawColor", GetRenderDrawColor},
 	REG(GetRenderDriverInfo)
 	REG(GetRenderTarget)
 	REG(GetRenderer)
 	REG(GetRendererInfo)
-//	REG(GetRendererOutputSize)
-//	REG(GetTextureAlphaMod)
-//	REG(GetTextureBlendMode)
-//	REG(GetTextureColorMod)
+	{"GetRendererOutputSize", GetRendererOutputSize},
+	{"GetTextureAlphaMod", GetTextureAlphaMod},
+	{"GetTextureBlendMode", GetTextureBlendMode},
+	{"GetTextureColorMod", GetTextureColorMod},
 //	REG(LockTexture)
-//	REG(QueryTexture)
+	{"QueryTexture", QueryTexture},
 	REG(RenderClear)
 	REG(RenderCopy)
 	REG(RenderCopyEx)
@@ -83,10 +188,12 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	REG(RenderFillRect)
 	REG(RenderFillRects)
 	REG(RenderGetClipRect)
-//	REG(RenderGetLogicalSize)
-//	REG(RenderGetScale)
+	{"RenderGetLogicalSize", RenderGetLogicalSize},
+	{"RenderGetScale", RenderGetScale},
 	REG(RenderGetViewport)
-//	REG(RenderIsClipEnabled)
+	#if SDL_VERSION_ATLEAST(2, 0, 4)
+	REG(RenderIsClipEnabled)
+	#endif
 	REG(RenderPresent)
 //	REG(RenderReadPixels)
 	REG(RenderSetClipRect)
@@ -100,12 +207,23 @@ extern "C" int luaopen_SDL_render(lua_State *state)
 	REG(SetTextureAlphaMod)
 	REG(SetTextureBlendMode)
 	REG(SetTextureColorMod)
-//	REG(UnlockTexture)
+	REG(UnlockTexture)
 //	REG(UpdateTexture)
-//	REG(UpdateUYVTexture)
+	#if SDL_VERSION_ATLEAST(2, 0, 1)
+	REG(UpdateYUVTexture)
+	#endif
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
+
+	/* Classes */
+
+	luaL_newmetatable(state, Type<SDL_Renderer>::name);
+	luaL_newmetatable(state, Type<SDL_Texture>::name);
+	lua_pop(state, 2);
+	
+	/* Done */
+
 	return 1;
 }
 

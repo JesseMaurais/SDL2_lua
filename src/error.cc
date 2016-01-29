@@ -10,6 +10,13 @@ static int SetError(lua_State *state)
 	return 1;
 }
 
+static int GetError(lua_State *state)
+{
+	const char *string = SDL_GetError();
+	lua_pushstring(state, string);
+	return 1;
+}
+
 extern "C" int luaopen_SDL_error(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
@@ -20,7 +27,7 @@ extern "C" int luaopen_SDL_error(lua_State *state)
 	{
 	{"SetError", SetError},
 	REG(ClearError)
-	REG(GetError)
+	{"GetError", GetError},
 	END
 	};
 	luaL_setfuncs(state, regs, 0);

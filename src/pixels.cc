@@ -2,6 +2,41 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
+template <> luaL_Reg lux_Class<SDL_Color>::index[] =
+	{
+	{"r", lux_member(SDL_Color, r)},
+	{"g", lux_member(SDL_Color, g)},
+	{"b", lux_member(SDL_Color, b)},
+	{"a", lux_member(SDL_Color, a)},
+	{nullptr}
+	};
+
+template <> luaL_Reg lux_Class<SDL_Palette>::index[] =
+	{
+	{"ncolors", lux_member(SDL_Palette, ncolors)},
+	{"colors", lux_member(SDL_Palette, colors)},
+	{nullptr}
+	};
+
+template <> luaL_Reg lux_Class<SDL_PixelFormat>::index[] =
+	{
+	{"format", lux_member(SDL_PixelFormat, format)},
+	{"palette", lux_member(SDL_PixelFormat, palette)},
+	{"BitsPerPixel", lux_member(SDL_PixelFormat, BitsPerPixel)},
+	{"BytesPerPixel", lux_member(SDL_PixelFormat, BytesPerPixel)},
+	{"Rmask", lux_member(SDL_PixelFormat, Rmask)},
+	{"Gmask", lux_member(SDL_PixelFormat, Gmask)},
+	{"Bmask", lux_member(SDL_PixelFormat, Bmask)},
+	{"Amask", lux_member(SDL_PixelFormat, Amask)},
+	{nullptr}
+	};
+
+static int GetPixelFormatName(lua_State *state)
+{
+	lua_pushstring(state, SDL_GetPixelFormatName(lua_tointeger(state, 1)));
+	return 1;
+}
+
 static int GetRGB(lua_State *state)
 {
 	SDL_Color color;
@@ -34,10 +69,15 @@ static int PixelFormatEnumToMasks(lua_State *state)
 
 extern "C" int luaopen_SDL_pixels(lua_State *state)
 {
+	/* Initialize */
+
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Parameters */
+
 	lux_Reg<lua_Integer> args[] =
 	{
 	 // SDL_PixelFormatEnum
@@ -123,6 +163,9 @@ extern "C" int luaopen_SDL_pixels(lua_State *state)
 	END
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs [] = 
 	{
 	REG(AllocFormat)
@@ -130,18 +173,28 @@ extern "C" int luaopen_SDL_pixels(lua_State *state)
 	REG(CalculateGammaRamp)
 	REG(FreeFormat)
 	REG(FreePalette)
-	REG(GetPixelFormatName)
-	REG(GetRGB)
-	REG(GetRGBA)
+	{"GetPixelFormatName", GetPixelFormatName},
+	{"GetRGB", GetRGB},
+	{"GetRGBA", GetRGBA},
 	REG(MapRGB)
 	REG(MapRGBA)
 	REG(MasksToPixelFormatEnum)
-	REG(PixelFormatEnumToMasks)
+	{"PixelFormatEnumToMasks", PixelFormatEnumToMasks},
 	REG(SetPaletteColors)
 	REG(SetPixelFormatPalette)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
+
+	/* Classes */
+
+	lux_Class<SDL_Color>::require(state);
+	lux_Class<SDL_Palette>::require(state);
+	lux_Class<SDL_PixelFormat>::require(state);
+	lua_pop(state, 3);
+
+	/* Done */
+
 	return 1;
 }
 
