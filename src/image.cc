@@ -41,6 +41,6 @@ extern "C" int luaopen_SDL_image(lua_State *state)
 
 	/* Done */
 
-	return 0;
+	return 1;
 }
 

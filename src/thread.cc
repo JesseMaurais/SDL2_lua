@@ -55,15 +55,30 @@ extern "C" int luaopen_SDL_thread(lua_State *state)
 		return luaL_error(state, SDL_REQUIRED);
 	}
 
+	/* Parameters */
+
+	lux_Reg<lua_Integer> args[] =
+	{
+	// SDL_ThreadPriority
+	ARG(THREAD_PRIORITY_LOW)
+	ARG(THREAD_PRIORITY_NORMAL)
+	ARG(THREAD_PRIORITY_HIGH)
+	END
+	};
+	lux_settable(state, args);
+
 	/* Functions */
 
-	luaL_Reg regs [] =
+	luaL_Reg regs[] =
 	{
 	{"CreateThread", CreateThread},
-	{"DetachThread", lux_cast(SDL_DetachThread)},
-	{"GetThreadID", lux_cast(SDL_GetThreadID)},
+	REG(DetachThread)
+	REG(GetThreadID)
+	REG(GetThreadName)
+	REG(SetThreadPriority)
+	REG(ThreadID)
 	{"WaitThread", WaitThread},
-	{nullptr}
+	END
 	};
 	luaL_setfuncs(state, regs, 0);
 

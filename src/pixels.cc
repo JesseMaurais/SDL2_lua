@@ -69,8 +69,6 @@ static int PixelFormatEnumToMasks(lua_State *state)
 
 extern "C" int luaopen_SDL_pixels(lua_State *state)
 {
-	/* Initialize */
-
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
@@ -186,15 +184,14 @@ extern "C" int luaopen_SDL_pixels(lua_State *state)
 	};
 	luaL_setfuncs(state, regs, 0);
 
-	/* Classes */
+	/* Structures */
 
 	lux_Class<SDL_Color>::require(state);
 	lux_Class<SDL_Palette>::require(state);
 	lux_Class<SDL_PixelFormat>::require(state);
-	lua_pop(state, 3);
 
 	/* Done */
 
-	return 1;
+	return 0;
 }
 

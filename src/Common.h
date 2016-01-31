@@ -9,6 +9,8 @@
 
 template <class T> using Type = lux_Type<T*>;
 
+template <> const char *Type<SDL_RendererInfo>::name = "RendererInfo";
+template <> const char *Type<SDL_DisplayMode>::name = "DisplayMode";
 template <> const char *Type<SDL_Renderer>::name = "Renderer";
 template <> const char *Type<SDL_Texture>::name = "Texture";
 template <> const char *Type<SDL_Window>::name = "Window";
@@ -21,6 +23,7 @@ template <> const char *Type<SDL_Surface>::name = "Surface";
 
 template <> const char *Type<SDL_GameController>::name = "GameController";
 template <> const char *Type<SDL_Joystick>::name = "Joystick";
+template <> const char *Type<SDL_Finger>::name = "Finger";
 
 template <> const char *Type<SDL_Thread>::name = "Thread";
 template <> const char *Type<SDL_mutex>::name = "Mutex";
@@ -31,6 +34,7 @@ template <> const char *Type<SDL_RWops>::name = "RWops";
 
 #define REG(name) {#name, lux_cast(SDL_##name)},
 #define ARG(name) {#name, SDL_##name},
+#define MEM(rec, mem) {#mem, lux_member(rec, mem)},
 #define END {nullptr}
 
 

@@ -2,6 +2,28 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
+static int GetAttribute(lua_State *state)
+{
+	int value;
+	auto attr = lux_to<SDL_GLattr>(state, 1);
+	if (!SDL_GL_GetAttribute(attr, &value))
+	{
+	 lua_pushinteger(state, value);
+	 return 1;
+	}
+	return 0;
+}
+
+#if SDL_VERSION_ATLEAST(2, 0, 1)
+static int GetDrawableSize(lua_State *state)
+{
+	int w, h;
+	auto window = lux_to<SDL_Window*>(state, 1);
+	SDL_GL_GetDrawableSize(window, &w, &h);
+	return lux_push(state, w, h);
+}
+#endif
+
 #undef REG
 #define REG(name) {#name, lux_cast(SDL_GL_##name)},
 #undef ARG
@@ -60,10 +82,12 @@ extern "C" int luaopen_SDL_opengl(lua_State *state)
 	REG(CreateContext)
 	REG(DeleteContext)
 	REG(ExtensionSupported)
-//	REG(GetAttribute)
+	{"GetAttribute", GetAttribute},
 	REG(GetCurrentContext)
 	REG(GetCurrentWindow)
-//	REG(GetDrawableSize)
+	#if SDL_VERSION_ATLEAST(2, 0, 1)
+	{"GetDrawableSize", GetDrawableSize},
+	#endif
 	REG(GetProcAddress)
 	REG(GetSwapInterval)
 	REG(LoadLibrary)
@@ -80,6 +104,6 @@ extern "C" int luaopen_SDL_opengl(lua_State *state)
 
 	/* Done */
 
-	return 1;
+	return 0;
 }
 

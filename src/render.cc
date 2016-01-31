@@ -2,6 +2,17 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
+template <> luaL_Reg lux_Class<SDL_RendererInfo>::index[] =
+	{
+	MEM(SDL_RendererInfo, name)
+	MEM(SDL_RendererInfo, flags)
+	MEM(SDL_RendererInfo, num_texture_formats)
+//	MEM(SDL_RendererInfo, texture_formats)
+	MEM(SDL_RendererInfo, max_texture_width)
+	MEM(SDL_RendererInfo, max_texture_height)
+	END
+	};
+
 static int CreateWindowAndRenderer(lua_State *state)
 {
 	SDL_Window *window;

@@ -2,6 +2,16 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
+template <> luaL_Reg lux_Class<SDL_DisplayMode>::index[] =
+	{
+	MEM(SDL_DisplayMode, format)
+	MEM(SDL_DisplayMode, w)
+	MEM(SDL_DisplayMode, h)
+	MEM(SDL_DisplayMode, refresh_rate)
+//	MEM(SDL_DisplayMode, driverdata)
+	END
+	};
+
 static int GetWindowGammaRamp(lua_State *state)
 {
 	auto window = lux_to<SDL_Window*>(state, 1);
@@ -220,7 +230,7 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 
 	/* Structures */
 
-	luaL_newmetatable(state, Type<SDL_DisplayMode>::name);
+	lux_Class<SDL_DisplayMode>::require(state);
 	luaL_newmetatable(state, Type<SDL_Window>::name);
 
 	/* Done */
