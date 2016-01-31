@@ -61,6 +61,8 @@ static int PlayChannel(int channel, Mix_Chunk *chunk, int loops)
 
 extern "C" int luaopen_SDL_mixer(lua_State *state)
 {
+	/* Initialize */
+
 	if (!Mix_Init(MIX_INIT_FLAC|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OGG))
 	{
 		const char *error = Mix_GetError();
@@ -71,7 +73,13 @@ extern "C" int luaopen_SDL_mixer(lua_State *state)
 	{
 		return luaL_error(state, "Cannot make exit (atexit < 0)");
 	}
+
+	/* Module Metatable */
+
 	luaL_newmetatable(state, "SDL2_mixer");
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(OpenAudio)
@@ -149,5 +157,8 @@ extern "C" int luaopen_SDL_mixer(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Done */
+
+	return 0;
 }

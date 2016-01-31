@@ -8,11 +8,17 @@ extern "C" int luaopen_SDL_haptic(lua_State *state)
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Initialize */
+
 	if (SDL_InitSubSystem(SDL_INIT_HAPTIC) < 0)
 	{
 		auto error = SDL_GetError();
 		return luaL_error(state, "SDL_InitSubSystem: %s", error);
 	}
+
+	/* Parameters */
+
 	lux_Reg<lua_Integer> args[] =
 	{
 	// effects
@@ -41,6 +47,9 @@ extern "C" int luaopen_SDL_haptic(lua_State *state)
 	END
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(HapticClose)
@@ -64,7 +73,7 @@ extern "C" int luaopen_SDL_haptic(lua_State *state)
 	REG(HapticRumbleStop)
 	REG(HapticRumbleSupported)
 	REG(HapticRunEffect)
-//	REG(HapticSetAudioCenter)
+	REG(HapticSetAutocenter)
 	REG(HapticSetGain)
 	REG(HapticStopAll)
 	REG(HapticStopEffect)
@@ -76,6 +85,13 @@ extern "C" int luaopen_SDL_haptic(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Structures */
+
+	luaL_newmetatable(state, Type<SDL_Haptic>::name);
+
+	/* Done */
+
+	return 0;
 }
 

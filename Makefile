@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-std=c++11 -g -fPIC
-OBJ=assert.so audio.so clipboard.so cpuinfo.so error.so events.so filesystem.so gamecontroller.so gesture.so gfx.so haptic.so hints.so image.so joystick.so keys.so main.so messagebox.so mixer.so mouse.so mutex.so net.so opengl.so pixels.so rect.so render.so rwops.so shape.so stdinc.so surface.so thread.so timer.so touch.so ttf.so version.so video.so
+OBJ=assert.so audio.so clipboard.so cpuinfo.so error.so events.so filesystem.so gamecontroller.so gesture.so gfx.so haptic.so hints.so image.so joystick.so keys.so main.so messagebox.so mixer.so mouse.so mutex.so net.so opengl.so pixels.so power.so rect.so render.so rwops.so shape.so stdinc.so surface.so thread.so timer.so touch.so ttf.so version.so video.so
 LIB=$(addprefix SDL/,$(OBJ))
 
 all: $(LIB)

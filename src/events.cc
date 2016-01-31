@@ -10,12 +10,13 @@ template <> luaL_Reg lux_Class<SDL_Event>::index[] =
 
 extern "C" int luaopen_SDL_events(lua_State *state)
 {
-	/* Initialize */
-
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Initialize */
+
 	if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 	{
 		auto error = SDL_GetError();
@@ -111,7 +112,7 @@ extern "C" int luaopen_SDL_events(lua_State *state)
 	REG(HasEvents)
 	REG(LoadDollarTemplates)
 	REG(PeepEvents)
-//	REG(PollEvents)
+	REG(PollEvent)
 	REG(PumpEvents)
 	REG(PushEvent)
 //	REG(QuitRequested)
@@ -126,13 +127,13 @@ extern "C" int luaopen_SDL_events(lua_State *state)
 	};
 	luaL_setfuncs(state, regs, 0);
 
-	/* Classes */
+	/* Structures */
 
 	lux_Class<SDL_Event>::require(state);
 	lua_setfield(state, -2, "Event");
 
 	/* Done */
 	
-	return 1;
+	return 0;
 }
  

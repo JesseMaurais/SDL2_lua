@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
-extern "C" int luaopen_SDL_filesystem(lua_State *state)
+extern "C" int luaopen_SDL_platform(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
@@ -11,10 +11,9 @@ extern "C" int luaopen_SDL_filesystem(lua_State *state)
 
 	/* Functions */
 
-	luaL_Reg regs [] =
+	luaL_Reg regs[] =
 	{
-	REG(GetBasePath)
-	REG(GetPrefPath)
+	REG(GetPlatform)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);

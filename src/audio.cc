@@ -8,12 +8,17 @@ extern "C" int luaopen_SDL_audio(lua_State *state)
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
-	// Video subsystem initialization
+
+	/* Initialize */
+
 	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
 	{
 		auto error = SDL_GetError();
 		return luaL_error(state, "SDL_InitSubSystem: %s", error);
 	}
+
+	/* Parameters */
+	
 	lux_Reg<lua_Integer> args [] =
 	{
 	// SDL_AudioStatus
@@ -47,12 +52,17 @@ extern "C" int luaopen_SDL_audio(lua_State *state)
 	END
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 //	REG(AudioInit)
 //	REG(AudioQuit)
 	REG(BuildAudioCVT)
-//	REG(ClearQueuedAudio)
+	#if SDL_VERSION_ATLEAST(2, 0, 4)
+	REG(ClearQueuedAudio)
+	#endif
 	REG(CloseAudio)
 	REG(CloseAudioDevice)
 	REG(ConvertAudio)
@@ -64,7 +74,9 @@ extern "C" int luaopen_SDL_audio(lua_State *state)
 	REG(GetCurrentAudioDriver)
 	REG(GetNumAudioDevices)
 	REG(GetNumAudioDrivers)
-//	REG(GetQueuedAudioSize)
+	#if SDL_VERSION_ATLEAST(2, 0, 4)
+	REG(GetQueuedAudioSize)
+	#endif
 //	REG(LoadWAV)
 //	REG(LoadWAV_RW)
 	REG(LockAudio)
@@ -75,12 +87,17 @@ extern "C" int luaopen_SDL_audio(lua_State *state)
 	REG(OpenAudioDevice)
 	REG(PauseAudio)
 	REG(PauseAudioDevice)
+	#if SDL_VERSION_ATLEAST(2, 0, 4)
 //	REG(QueueAudio)
+	#endif
 	REG(UnlockAudio)
 	REG(UnlockAudioDevice)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Done */
+
+	return 0;
 }
 
