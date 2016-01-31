@@ -2,17 +2,34 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
+#if SDL_VERSION_ATLEAST(2, 0, 2)
+static int GameControllerAddMappingsFromFile(lua_State *state)
+{
+	auto path = lua_tostring(state, 1);
+	auto ops = SDL_RWFromFile(path, "rb");
+	auto gamecontroller = SDL_GameControllerAddMappingsFromRW(ops, true);
+	lux_push(state, gamecontroller);
+	return 1;
+}
+#endif
+
 extern "C" int luaopen_SDL_gamecontroller(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Initialize */
+
 	if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) < 0)
 	{
 		auto error = SDL_GetError();
 		return luaL_error(state, "SDL_InitSubSystem: %s", error);
 	}
+
+	/* Parameters */
+
 	lux_Reg<lua_Integer> args [] =
 	{
 	// SDL_GameControllerAxis
@@ -50,11 +67,16 @@ extern "C" int luaopen_SDL_gamecontroller(lua_State *state)
 	END
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(GameControllerAddMapping)
-//	REG(GameControllerAddMappingsFromFile)
-//	REG(GameControllerAddMappingsFromRW)
+	#if SDL_VERSION_ATLEAST(2, 0, 2)
+	{"GameControllerAddMappingsFromFile", GameControllerAddMappingsFromFile},
+	REG(GameControllerAddMappingsFromRW)
+	#endif
 	REG(GameControllerClose)
 	REG(GameControllerEventState)
 	REG(GameControllerGetAttached)
@@ -77,6 +99,13 @@ extern "C" int luaopen_SDL_gamecontroller(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Structures */
+
+	luaL_newmetatable(state, Type<SDL_GameController>::name);
+
+	/* Done */
+
+	return 0;
 }
 

@@ -19,6 +19,9 @@ template <> const char *Type<SDL_Palette>::name = "Palette";
 template <> const char *Type<SDL_PixelFormat>::name = "PixelFormat";
 template <> const char *Type<SDL_Surface>::name = "Surface";
 
+template <> const char *Type<SDL_GameController>::name = "GameController";
+template <> const char *Type<SDL_Joystick>::name = "Joystick";
+
 template <> const char *Type<SDL_Thread>::name = "Thread";
 template <> const char *Type<SDL_mutex>::name = "Mutex";
 template <> const char *Type<SDL_cond>::name = "Cond";

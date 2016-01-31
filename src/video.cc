@@ -212,8 +212,8 @@ extern "C" int luaopen_SDL_video(lua_State *state)
 	REG(ShowWindow)
 	REG(UpdateWindowSurface)
 	REG(UpdateWindowSurfaceRects)
-	REG(VideoInit)
-	REG(VideoQuit)
+//	REG(VideoInit)
+//	REG(VideoQuit)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
