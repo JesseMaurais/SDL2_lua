@@ -22,6 +22,9 @@ extern "C" int luaopen_SDL_version(lua_State *state)
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	{"GetRevision", GetRevision},
@@ -30,6 +33,9 @@ extern "C" int luaopen_SDL_version(lua_State *state)
 	{nullptr}
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Done */
+
+	return 0;
 }
 

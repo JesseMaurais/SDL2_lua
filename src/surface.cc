@@ -12,6 +12,53 @@ template <> luaL_Reg lux_Class<SDL_Surface>::index[] =
 	{nullptr}
 	};
 
+static int GetColorKey(lua_State *state)
+{
+	Uint32 key;
+	auto surface = lux_to<SDL_Surface*>(state, 1);
+	if (!SDL_GetColorKey(surface, &key))
+	{
+	 lua_pushinteger(state, key);
+	 return 1;
+	}
+	return 0;
+}
+
+static int GetSurfaceAlphaMod(lua_State *state)
+{
+	Uint8 alpha;
+	auto surface = lux_to<SDL_Surface*>(state, 1);
+	if (!SDL_GetSurfaceAlphaMod(surface, &alpha))
+	{
+	 lua_pushinteger(state, alpha);
+	 return 1;
+	}
+	return 0;
+}
+
+static int GetSurfaceBlendMode(lua_State *state)
+{
+	SDL_BlendMode mode;
+	auto surface = lux_to<SDL_Surface*>(state, 1);
+	if (!SDL_GetSurfaceBlendMode(surface, &mode))
+	{
+	 lux_push(state, mode);
+	 return 1;
+	}
+	return 0;
+}
+
+static int GetSurfaceColorMod(lua_State *state)
+{
+	Uint8 r, g, b;
+	auto surface = lux_to<SDL_Surface*>(state, 1);
+	if (!SDL_GetSurfaceColorMod(surface, &r, &g, &b))
+	{
+	 return lux_push(state, r, g, b);
+	}
+	return 0;
+}
+
 static SDL_Surface *LoadBMP(const char *path)
 {
 	return SDL_LoadBMP(path);
@@ -24,8 +71,6 @@ static int SaveBMP(SDL_Surface *surface, const char *path)
 
 extern "C" int luaopen_SDL_surface(lua_State *state)
 {
-	/* Initialize */
-
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
@@ -46,10 +91,10 @@ extern "C" int luaopen_SDL_surface(lua_State *state)
 	REG(FillRects)
 	REG(FreeSurface)
 	REG(GetClipRect)
-//	REG(GetColorKey)
-//	REG(GetSurfaceAlphaMod)
-//	REG(GetSurfaceBlendMode)
-//	REG(GetSurfaceColorMod)
+	{"GetColorKey", GetColorKey},
+	{"GetSurfaceAlphaMod", GetSurfaceAlphaMod},
+	{"GetSurfaceBlendMode", GetSurfaceBlendMode},
+	{"GetSurfaceColorMod", GetSurfaceColorMod},
 	{"LoadBMP", lux_cast(LoadBMP)},
 	REG(LoadBMP_RW)
 	REG(LockSurface)
@@ -60,7 +105,7 @@ extern "C" int luaopen_SDL_surface(lua_State *state)
 	REG(SetClipRect)
 	REG(SetColorKey)
 	REG(SetSurfaceAlphaMod)
-//	REG(SetSurfaceBlendMode)
+	REG(SetSurfaceBlendMode)
 	REG(SetSurfaceColorMod)
 	REG(SetSurfacePalette)
 	REG(SetSurfaceRLE)
@@ -69,13 +114,12 @@ extern "C" int luaopen_SDL_surface(lua_State *state)
 	};
 	luaL_setfuncs(state, regs, 0);
 
-	/* Classes */
+	/* Structures */
 
 	lux_Class<SDL_Surface>::require(state);
-	lua_pop(state, 1);
 
 	/* Done */
 
-	return 1;
+	return 0;
 }
 

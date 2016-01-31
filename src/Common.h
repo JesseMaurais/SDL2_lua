@@ -1,3 +1,6 @@
+#ifndef SDL_lua
+#define SDL_lua
+
 #include <lux/lux.hpp>
 #include <SDL2/SDL.h>
 
@@ -16,9 +19,17 @@ template <> const char *Type<SDL_Palette>::name = "Palette";
 template <> const char *Type<SDL_PixelFormat>::name = "PixelFormat";
 template <> const char *Type<SDL_Surface>::name = "Surface";
 
+template <> const char *Type<SDL_Thread>::name = "Thread";
+template <> const char *Type<SDL_mutex>::name = "Mutex";
+template <> const char *Type<SDL_cond>::name = "Cond";
+template <> const char *Type<SDL_sem>::name = "Sem";
+
+template <> const char *Type<SDL_RWops>::name = "RWops";
+
 #define REG(name) {#name, lux_cast(SDL_##name)},
 #define ARG(name) {#name, SDL_##name},
 #define END {nullptr}
+
 
 template <> inline
 void lux_push<SDL_bool>(lua_State *state, SDL_bool value)
@@ -177,4 +188,6 @@ template <> inline
 	SDL_memcpy(guid.data, data, sizeof(guid));
 	return guid;
 }
+
+#endif // file
 

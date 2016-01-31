@@ -38,6 +38,9 @@ extern "C" int luaopen_SDL_rwops(lua_State *state)
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(AllocRW)
@@ -67,6 +70,13 @@ extern "C" int luaopen_SDL_rwops(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Structures */
+
+	luaL_newmetatable(state, Type<SDL_RWops>::name);
+
+	/* Done */
+
+	return 0;
 }
 

@@ -48,16 +48,15 @@ static int WaitThread(lua_State *state)
 	return size;
 }
 
-template <> const char *Type<SDL_Thread>::name = "Thread";
-
 extern "C" int luaopen_SDL_thread(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
-	luaL_newmetatable(state, Type<SDL_Thread>::name);
-	lua_pop(state, 1);
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	{"CreateThread", CreateThread},
@@ -67,7 +66,14 @@ extern "C" int luaopen_SDL_thread(lua_State *state)
 	{nullptr}
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Structures */
+
+	luaL_newmetatable(state, Type<SDL_Thread>::name);
+
+	/* Done */
+
+	return 0;
 }
 
 

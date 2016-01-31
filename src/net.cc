@@ -8,6 +8,8 @@
 
 extern "C" int luaopen_SDL_net(lua_State *state)
 {
+	/* Initialize */
+
 	if (SDLNet_Init() < 0)
 	{
 		const char *error = SDLNet_GetError();
@@ -18,7 +20,13 @@ extern "C" int luaopen_SDL_net(lua_State *state)
 	{
 		return luaL_error(state, "Cannot make exit (atexit < 0)");
 	}
+
+	/* Metatable Module */
+
 	luaL_newmetatable(state, "SDL2_net");
+
+	/* Parameters */
+
 	lux_Reg<lua_Integer> args[] =
 	{
 	{"INADDR_ANY", INADDR_ANY},
@@ -28,6 +36,9 @@ extern "C" int luaopen_SDL_net(lua_State *state)
 	{nullptr, 0}
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(ResolveHost)
@@ -66,6 +77,9 @@ extern "C" int luaopen_SDL_net(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
+
+	/* Done */
+
 	return 1;
 }
 

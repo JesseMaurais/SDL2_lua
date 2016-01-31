@@ -9,11 +9,10 @@
 
 extern "C" int luaopen_SDL_opengl(lua_State *state)
 {
-	if (!luaL_getmetatable(state, SDL_METATABLE))
-	{
-		return luaL_error(state, SDL_REQUIRED);
-	}
 	lua_newtable(state);
+
+	/* Parameters */
+
 	lux_Reg<lua_Integer> args[] = 
 	{
 	// SDL_GLattr
@@ -52,6 +51,9 @@ extern "C" int luaopen_SDL_opengl(lua_State *state)
 	END
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(BindTexture)
@@ -75,7 +77,9 @@ extern "C" int luaopen_SDL_opengl(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	lua_setfield(state, -2, "GL");
+
+	/* Done */
+
 	return 1;
 }
 

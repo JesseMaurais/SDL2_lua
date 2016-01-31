@@ -9,6 +9,9 @@ extern "C" int luaopen_SDL_shape(lua_State *state)
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Parameters */
+
 	lux_Reg<lua_Integer> args[] =
 	{
 	ARG(NONSHAPEABLE_WINDOW)
@@ -22,6 +25,9 @@ extern "C" int luaopen_SDL_shape(lua_State *state)
 	END
 	};
 	lux_settable(state, args);
+
+	/* Functions */
+
 	luaL_Reg regs []
 	{
 	REG(CreateShapedWindow)
@@ -31,6 +37,9 @@ extern "C" int luaopen_SDL_shape(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Done */
+
+	return 0;
 }
 

@@ -8,6 +8,9 @@ extern "C" int luaopen_SDL_rect(lua_State *state)
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(EnclosePoints)
@@ -21,6 +24,9 @@ extern "C" int luaopen_SDL_rect(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Done */
+
+	return 0;
 }
 

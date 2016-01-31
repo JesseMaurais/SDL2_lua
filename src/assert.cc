@@ -2,42 +2,45 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
-static SDL_assert_state AssertHandler(const SDL_assert_data *data, void *user)
+typedef SDL_assert_state SDL_AssertState;
+typedef SDL_assert_data SDL_AssertData;
+
+static SDL_AssertState AssertionHandler(const SDL_AssertData *data, void *user)
 {
-	auto state = reinterpret_cast<lua_State*>(user);
-	lua_call(state, lua_gettop(state) - 1, LUA_MULTRET);
-	auto action = lux_to<SDL_assert_state>(state, 2);
-	lua_pop(state, 1);
-	if (!lua_isfunction(state, 1))
+	if (data->always_ignore) return SDL_ASSERTION_IGNORE;
+	static char buffer[BUFSIZ];
+	sprintf(buffer,
+		"Condition (%s) failed in function %s at line %d in file %s",
+		data->condition, data->function, data->linenum, data->filename);
+	SDL_MessageBoxButtonData buttons[] =
 	{
-		auto handler = SDL_GetDefaultAssertionHandler();
-		SDL_SetAssertionHandler(handler, nullptr);
+	{SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, SDL_ASSERTION_RETRY, "Retry"},
+	{SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, SDL_ASSERTION_BREAK, "Break"},
+	{0, SDL_ASSERTION_ABORT, "Abort"},
+	{0, SDL_ASSERTION_IGNORE, "Ignore"},
+	{0, SDL_ASSERTION_ALWAYS_IGNORE, "Always Ignore"}
+	};
+	SDL_MessageBoxData box;
+	box.flags = SDL_MESSAGEBOX_ERROR;
+	box.window = nullptr;
+	box.title = "Assertion";
+	box.message = buffer;
+	box.numbuttons = SDL_arraysize(buttons);
+	box.buttons = buttons;
+	box.colorScheme = nullptr;
+	int id = SDL_ASSERTION_ABORT;;
+	if (SDL_ShowMessageBox(&box, &id))
+	{
+		auto error = SDL_GetError();
+		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", error);
 	}
-	return action;
+	return (SDL_AssertState) id;
 }
 
-static int SetAssertionHandler(lua_State *state)
-{
-	auto stack = lua_newthread(state);
-	lua_xmove(state, stack, lua_gettop(state));
-	SDL_SetAssertionHandler(AssertHandler, stack);
-	return 0;
-}
-
-static int Assert(lua_State *state)
+static int assert_test(lua_State *state)
 {
 	SDL_assert(false and not true);
 	return 0;
-}
-
-static int AssertParanoid(lua_State *state)
-{
-
-}
-
-static int AssertRelease(lua_State *state)
-{
-
 }
 
 extern "C" int luaopen_SDL_assert(lua_State *state)
@@ -46,27 +49,22 @@ extern "C" int luaopen_SDL_assert(lua_State *state)
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
-	lux_Reg<lua_Integer> args [] =
+
+	/* Initialize */
+
+	SDL_SetAssertionHandler(AssertionHandler, state);
+
+	/* Functions */
+
+	luaL_Reg regs[] =
 	{
-	// SDL_AssertState
-	{"ASSERTION_RETRY", SDL_ASSERTION_RETRY},
-	{"ASSERTION_BREAK", SDL_ASSERTION_BREAK},
-	{"ASSERTION_ABORT", SDL_ASSERTION_ABORT},
-	{"ASSERTION_IGNORE", SDL_ASSERTION_IGNORE},
-	{"ASSERTION_ALWAYS_IGNORE", SDL_ASSERTION_ALWAYS_IGNORE},
-	{nullptr}
-	};
-	lux_settable(state, args);
-	luaL_Reg regs [] =
-	{
-	{"ResetAssertionReport", lux_cast(SDL_ResetAssertionReport)},
-	{"SetAssertionHandler", SetAssertionHandler},
-	{"assert", Assert},
-	{"assert_paranoid", AssertParanoid},
-	{"assert_release", AssertRelease},
+	{"assert", assert_test},
 	{nullptr}
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Done */
+
+	return 0;
 }
 
