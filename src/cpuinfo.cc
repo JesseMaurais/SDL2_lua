@@ -8,14 +8,23 @@ extern "C" int luaopen_SDL_cpuinfo(lua_State *state)
 	{
 		return luaL_error(state, SDL_REQUIRED);
 	}
+
+	/* Functions */
+
 	luaL_Reg regs [] =
 	{
 	REG(GetCPUCacheLineSize)
 	REG(GetCPUCount)
+	#if SDL_VERSION_ATLEAST(2, 0, 1)
 	REG(GetSystemRAM)
+	#endif
 	REG(Has3DNow)
+	#if SDL_VERSION_ATLEAST(2, 0, 2)
 	REG(HasAVX)
-//	REG(HasAVX2)
+	#endif
+	#if SDL_VERSION_ATLEAST(2, 0, 4)
+	REG(HasAVX2)
+	#endif
 	REG(HasAltiVec)
 	REG(HasMMX)
 	REG(HasRDTSC)
@@ -27,6 +36,9 @@ extern "C" int luaopen_SDL_cpuinfo(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
-	return 1;
+
+	/* Done */
+
+	return 0;
 }
 
