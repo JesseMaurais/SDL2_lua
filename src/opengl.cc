@@ -104,6 +104,6 @@ extern "C" int luaopen_SDL_opengl(lua_State *state)
 
 	/* Done */
 
-	return 0;
+	return 1;
 }
 

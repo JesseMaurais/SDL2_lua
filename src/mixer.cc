@@ -160,5 +160,5 @@ extern "C" int luaopen_SDL_mixer(lua_State *state)
 
 	/* Done */
 
-	return 0;
+	return 1;
 }
