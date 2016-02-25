@@ -2,6 +2,33 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
+template <> luaL_Reg lux_Class<SDL_AudioSpec>::index[] =
+	{
+	MEM(SDL_AudioSpec, freq)
+	MEM(SDL_AudioSpec, format)
+	MEM(SDL_AudioSpec, channels)
+	MEM(SDL_AudioSpec, silence)
+	MEM(SDL_AudioSpec, samples)
+	MEM(SDL_AudioSpec, size)
+	END
+	};
+
+template <> luaL_Reg lux_Class<SDL_AudioCVT>::index[] =
+	{
+	MEM(SDL_AudioCVT, needed)
+	MEM(SDL_AudioCVT, src_format)
+	MEM(SDL_AudioCVT, dst_format)
+	MEM(SDL_AudioCVT, rate_incr)
+	MEM(SDL_AudioCVT, buf)
+	MEM(SDL_AudioCVT, len)
+	MEM(SDL_AudioCVT, len_cvt)
+	MEM(SDL_AudioCVT, len_mult)
+	MEM(SDL_AudioCVT, len_ratio)
+//	MEM(SDL_AudioCVT, filters)
+	MEM(SDL_AudioCVT, filter_index)
+	END
+	};
+
 extern "C" int luaopen_SDL_audio(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
@@ -95,6 +122,11 @@ extern "C" int luaopen_SDL_audio(lua_State *state)
 	END
 	};
 	luaL_setfuncs(state, regs, 0);
+
+	/* Structures */
+
+	lux_Class<SDL_AudioSpec>::require(state);
+	lux_Class<SDL_AudioCVT>::require(state);
 
 	/* Done */
 

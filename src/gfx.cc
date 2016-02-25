@@ -15,7 +15,7 @@ extern "C" int luaopen_SDL_gfx(lua_State *state)
 	{"HLine", lux_cast(hlineRGBA)},
 	{"VLine", lux_cast(vlineRGBA)},
 	{"Rectangle", lux_cast(rectangleRGBA)},
-	{"RoudedRectangle", lux_cast(roundedRectangleRGBA)},
+	{"RoundedRectangle", lux_cast(roundedRectangleRGBA)},
 	{"Box", lux_cast(boxRGBA)},
 	{"RoundedBox", lux_cast(roundedBoxRGBA)},
 	{"Line", lux_cast(lineRGBA)},
