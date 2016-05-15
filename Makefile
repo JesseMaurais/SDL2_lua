@@ -12,8 +12,10 @@ clean:
 install: $(LIB)
 	mkdir -p $(DIR)
 	cp $(LIB) $(DIR)
+	cp SDL2/init.lua $(DIR)
 
 uninstall:
+	rm $(addprefix $(DIR), init.lua)
 	rm $(addprefix $(DIR), $(OBJ))
 	rmdir $(DIR)
 
