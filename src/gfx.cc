@@ -3,7 +3,7 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include "Common.h"
 
-extern "C" int luaopen_SDL_gfx(lua_State *state)
+extern "C" int luaopen_SDL2_gfx(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

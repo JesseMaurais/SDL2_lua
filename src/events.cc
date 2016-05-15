@@ -8,7 +8,7 @@ template <> luaL_Reg lux_Class<SDL_Event>::index[] =
 	{nullptr}
 	};
 
-extern "C" int luaopen_SDL_events(lua_State *state)
+extern "C" int luaopen_SDL2_events(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

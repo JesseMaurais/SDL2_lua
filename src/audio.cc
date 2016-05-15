@@ -29,7 +29,7 @@ template <> luaL_Reg lux_Class<SDL_AudioCVT>::index[] =
 	END
 	};
 
-extern "C" int luaopen_SDL_audio(lua_State *state)
+extern "C" int luaopen_SDL2_audio(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

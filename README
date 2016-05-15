@@ -1,0 +1,22 @@
+This aims to be a complete binding of the SDL2 media library to Lua using the
+Lux emitter. It provides Lua with all of the cross-platform video/audio/input
+functions as well as the more advanced utilities of CPU feature detection and
+pre-emptive mult-threading with mutual exclusion locks. There is also support
+for many other libraries in the SDL family:
+
+	SDL2
+	SDL2_image
+	SDL2_ttf
+	SDL2_mixer
+	SDL2_net
+	SDL2_gfx
+
+The API is split up into binary modules according to the division that SDL2
+itself divides into C headers, so that a Lua script can import as little or
+as much of the API as required. Function and structure names are identical;
+documentation for the C library functions is nearly equivalent for SDL2_lua.
+
+There is very little massaging of the C API in this binding, so that the user
+is required to (for example) free their own resources rather than rely on the
+garbage collector. But it would be a simple matter for the user to code these
+if desired.

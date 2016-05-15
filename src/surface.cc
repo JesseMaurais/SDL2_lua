@@ -69,7 +69,7 @@ static int SaveBMP(SDL_Surface *surface, const char *path)
 	return SDL_SaveBMP(surface, path);
 }
 
-extern "C" int luaopen_SDL_surface(lua_State *state)
+extern "C" int luaopen_SDL2_surface(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
-extern "C" int luaopen_SDL_main(lua_State *state)
+extern "C" int luaopen_SDL2_main(lua_State *state)
 {
 	// Is this necessary if main is in the interpreter?
 //	SDL_SetMainReady();

@@ -29,7 +29,7 @@ static int GetDrawableSize(lua_State *state)
 #undef ARG
 #define ARG(name) {#name, SDL_GL_##name},
 
-extern "C" int luaopen_SDL_opengl(lua_State *state)
+extern "C" int luaopen_SDL2_opengl(lua_State *state)
 {
 	lua_newtable(state);
 

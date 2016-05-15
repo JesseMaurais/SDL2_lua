@@ -1,5 +1,5 @@
-SDL = require'SDL'
-require'SDL.thread'
+SDL = require'SDL2'
+require'SDL2.thread'
 
 function Concat(a, b) return a .. b end
 

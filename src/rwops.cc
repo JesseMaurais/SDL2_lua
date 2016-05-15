@@ -32,7 +32,7 @@ static size_t RWwrite(SDL_RWops *ops, void *ptr, size_t size, size_t items)
 	return SDL_RWwrite(ops, ptr, size, items);
 }
 
-extern "C" int luaopen_SDL_rwops(lua_State *state)
+extern "C" int luaopen_SDL2_rwops(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

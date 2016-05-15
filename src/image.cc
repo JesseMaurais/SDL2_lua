@@ -6,7 +6,7 @@
 #undef REG
 #define REG(name) {#name, lux_cast(IMG_##name)},
 
-extern "C" int luaopen_SDL_image(lua_State *state)
+extern "C" int luaopen_SDL2_image(lua_State *state)
 {
 	/* Initialize */
 

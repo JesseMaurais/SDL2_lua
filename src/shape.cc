@@ -3,7 +3,7 @@
 #include <SDL2/SDL_shape.h>
 #include "Common.h"
 
-extern "C" int luaopen_SDL_shape(lua_State *state)
+extern "C" int luaopen_SDL2_shape(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

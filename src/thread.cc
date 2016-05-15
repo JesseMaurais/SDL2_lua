@@ -48,7 +48,7 @@ static int WaitThread(lua_State *state)
 	return size;
 }
 
-extern "C" int luaopen_SDL_thread(lua_State *state)
+extern "C" int luaopen_SDL2_thread(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include "Common.h"
 
-extern "C" int luaopen_SDL_gesture(lua_State *state)
+extern "C" int luaopen_SDL2_gesture(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

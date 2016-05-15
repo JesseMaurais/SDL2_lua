@@ -59,7 +59,7 @@ static int PlayChannel(int channel, Mix_Chunk *chunk, int loops)
 #undef REG
 #define REG(name) {#name, lux_cast(Mix_##name)},
 
-extern "C" int luaopen_SDL_mixer(lua_State *state)
+extern "C" int luaopen_SDL2_mixer(lua_State *state)
 {
 	/* Initialize */
 

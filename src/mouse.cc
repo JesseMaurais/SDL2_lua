@@ -22,7 +22,7 @@ static int GetRelativeMouseState(lua_State *state)
 	return lux_push(state, x, y, buttons);
 }
 
-extern "C" int luaopen_SDL_mouse(lua_State *state)
+extern "C" int luaopen_SDL2_mouse(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

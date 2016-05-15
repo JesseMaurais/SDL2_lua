@@ -1,5 +1,5 @@
-SDL = require'SDL'
-require'SDL.timer'
+SDL = require'SDL2'
+require'SDL2.timer'
 
 count = 1
 function TimerCallback(interval)

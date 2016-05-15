@@ -29,7 +29,7 @@ static int IntersectRectAndLine(lua_State *state)
 	return lux_push(state, result, x1, y1, x2, y2);
 }
 
-extern "C" int luaopen_SDL_rect(lua_State *state)
+extern "C" int luaopen_SDL2_rect(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

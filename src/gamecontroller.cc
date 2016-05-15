@@ -13,7 +13,7 @@ static int GameControllerAddMappingsFromFile(lua_State *state)
 }
 #endif
 
-extern "C" int luaopen_SDL_gamecontroller(lua_State *state)
+extern "C" int luaopen_SDL2_gamecontroller(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

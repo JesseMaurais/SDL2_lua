@@ -16,7 +16,7 @@ static int GetVersion(lua_State *state)
 	return lux_push(state, lib.major, lib.minor, lib.patch);
 }
 
-extern "C" int luaopen_SDL_version(lua_State *state)
+extern "C" int luaopen_SDL2_version(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

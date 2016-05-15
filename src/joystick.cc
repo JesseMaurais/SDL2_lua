@@ -14,7 +14,7 @@ static int JoystickGetBall(lua_State *state)
 	return 0;
 }
 
-extern "C" int luaopen_SDL_joystick(lua_State *state)
+extern "C" int luaopen_SDL2_joystick(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

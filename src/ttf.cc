@@ -163,7 +163,7 @@ static int RenderGlyph(lua_State *state)
 
 template <> const char *Type<TTF_Font>::name = "Font";
 
-extern "C" int luaopen_SDL_ttf(lua_State *state)
+extern "C" int luaopen_SDL2_ttf(lua_State *state)
 {
 	if (TTF_Init() < 0)
 	{

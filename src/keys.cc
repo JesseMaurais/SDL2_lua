@@ -5,7 +5,7 @@
 #undef ARG
 #define ARG(name) {#name, name},
 
-extern "C" int luaopen_SDL_keys(lua_State *state)
+extern "C" int luaopen_SDL2_keys(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

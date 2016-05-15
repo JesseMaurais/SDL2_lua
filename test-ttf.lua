@@ -1,8 +1,8 @@
-SDL = require 'SDL'
-TTF = require 'SDL.ttf'
-require 'SDL.video'
-require 'SDL.events'
-require 'SDL.surface'
+SDL = require 'SDL2'
+TTF = require 'SDL2.ttf'
+require 'SDL2.video'
+require 'SDL2.events'
+require 'SDL2.surface'
 
 message = 'Hello World!'
 font = TTF.OpenFont('Serif.ttf', 64)

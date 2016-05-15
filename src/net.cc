@@ -6,7 +6,7 @@
 #undef REG
 #define REG(name) {#name, lux_cast(SDLNet_##name)},
 
-extern "C" int luaopen_SDL_net(lua_State *state)
+extern "C" int luaopen_SDL2_net(lua_State *state)
 {
 	/* Initialize */
 

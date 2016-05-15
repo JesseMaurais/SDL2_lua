@@ -67,7 +67,7 @@ static int PixelFormatEnumToMasks(lua_State *state)
 	return 0;
 }
 
-extern "C" int luaopen_SDL_pixels(lua_State *state)
+extern "C" int luaopen_SDL2_pixels(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

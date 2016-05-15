@@ -124,7 +124,7 @@ static int RenderGetScale(lua_State *state)
 	return lux_push(state, scaleX, scaleY);
 }
 
-extern "C" int luaopen_SDL_render(lua_State *state)
+extern "C" int luaopen_SDL2_render(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

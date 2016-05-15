@@ -19,7 +19,7 @@ static int AddTimer(lua_State *state)
 	return 1;
 }
 
-extern "C" int luaopen_SDL_timer(lua_State *state)
+extern "C" int luaopen_SDL2_timer(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

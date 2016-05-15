@@ -8,7 +8,7 @@ static int GetPowerInfo(lua_State *state)
 	return lux_push(state, power, seconds, percent);
 }
 
-extern "C" int luaopen_SDL_power(lua_State *state)
+extern "C" int luaopen_SDL2_power(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

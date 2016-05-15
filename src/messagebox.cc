@@ -44,7 +44,7 @@ static int ShowMessageBox(lua_State *state)
 	return 0;
 }
 
-extern "C" int luaopen_SDL_messagebox(lua_State *state)
+extern "C" int luaopen_SDL2_messagebox(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

@@ -70,20 +70,21 @@ static int GetDisplayDPI(lua_State *state)
 static SDL_HitTestResult HitTest(SDL_Window *window, const SDL_Point *point, void *data)
 {
 	auto state = reinterpret_cast<lua_State*>(data);
-	int n = lux_push(state, window, point->x, point->y, point->w, point->h);
+	int n = lux_push(state, window, point->x, point->y);
 	lua_call(state, n, 1);
 	return lux_to<SDL_HitTestResult>(state, -1);
 }
 
 static int SetWindowHitTest(lua_State *state)
 {
+	auto window = lux_to<SDL_Window*>(state, 1);
 	int error = SDL_SetWindowHitTest(window, HitTest, state);
 	lua_pushinteger(state, error);
 	return 1;	
 }
 #endif
 
-extern "C" int luaopen_SDL_video(lua_State *state)
+extern "C" int luaopen_SDL2_video(lua_State *state)
 {
 	if (!luaL_getmetatable(state, SDL_METATABLE))
 	{

@@ -1,6 +1,6 @@
-SDL = require 'SDL'
-require 'SDL.events'
-require 'SDL.video'
+SDL = require 'SDL2'
+require 'SDL2.events'
+require 'SDL2.video'
 
 window = SDL.CreateWindow(
 	'Lua & SDL', -- title
