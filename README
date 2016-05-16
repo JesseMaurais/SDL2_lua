@@ -1,15 +1,20 @@
+Project: SDL2_lua
+=================
+
+	by Jesse Maurais (jessemaurais@gmail.com)
+
 This aims to be a complete binding of the SDL2 media library to Lua using the
 Lux emitter. It provides Lua with all of the cross-platform video/audio/input
 functions as well as the more advanced utilities of CPU feature detection and
 pre-emptive mult-threading with mutual exclusion locks. There is also support
 for many other libraries in the SDL family:
 
-	SDL2
-	SDL2_image
-	SDL2_ttf
-	SDL2_mixer
-	SDL2_net
-	SDL2_gfx
+	SDL2		The core library (video, audio, etc)
+	SDL2_image	For loading images in various formats
+	SDL2_ttf	For loading TrueType fonts
+	SDL2_mixer	A sample multi-channel audio mixer
+	SDL2_net	Cross-platform networking
+	SDL2_gfx	Render primitives, filter images, zoom & FPS tools
 
 The API is split up into binary modules according to the division that SDL2
 itself divides into C headers, so that a Lua script can import as little or
