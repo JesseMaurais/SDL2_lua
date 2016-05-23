@@ -1,3 +1,4 @@
+#!/usr/bin/env lua
 SDL = require 'SDL2'
 TTF = require 'SDL2.ttf'
 require 'SDL2.video'
@@ -5,7 +6,7 @@ require 'SDL2.events'
 require 'SDL2.surface'
 
 message = 'Hello World!'
-font = TTF.OpenFont('Serif.ttf', 64)
+font = TTF.OpenFont('serif.ttf', 64)
 w, h = TTF.SizeText(font, message)
 window = SDL.CreateWindow('True Type Font', 100, 100, w, h, SDL.WINDOW_HIDDEN)
 surface = SDL.GetWindowSurface(window)

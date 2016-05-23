@@ -1,3 +1,4 @@
+#!/usr/bin/env lua
 SDL = require'SDL2'
 require'SDL2.cpuinfo'
 require'SDL2.platform'

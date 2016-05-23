@@ -1,3 +1,4 @@
+#!/usr/bin/env lua
 SDL = require 'SDL2'
 require 'SDL2.events'
 require 'SDL2.video'
